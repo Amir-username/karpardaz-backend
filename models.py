@@ -1,5 +1,4 @@
 from sqlmodel import SQLModel, Field
-from typing import Optional
 
 
 class JobSeekerBase(SQLModel):
@@ -24,9 +23,34 @@ class JobSeekerPublic(JobSeekerBase):
 
 
 class JobSeekerUpdate(SQLModel):
-    firstname: Optional[str] = None
-    lastname: Optional[str] = None
-    email: Optional[str] = None
-    phonenumber: Optional[str] = None
-    password: Optional[str] = None
-    avatar: Optional[str] = None
+    firstname: str | None = None
+    lastname: str | None = None
+    email: str | None = None
+    password: str | None = None
+    avatar: str | None = None
+    phonenumber: str | None = None
+
+
+class EmployerBase(SQLModel):
+    company_name: str = Field(index=True)
+    email: str = Field(unique=True, index=True)
+
+
+class Employer(EmployerBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    hashed_password: str = Field(nullable=False)
+
+
+class EmployerCreate(EmployerBase):
+    password: str
+
+
+class EmployerPublic(EmployerBase):
+    id: int
+
+
+class EmployerUpdate(SQLModel):
+    company_name: str | None = None
+    email: str | None = None
+    password: str | None = None
+
