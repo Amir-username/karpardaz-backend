@@ -1,7 +1,13 @@
 from sqlmodel import SQLModel, Field
 from pydantic import EmailStr, field_validator
+from passlib.context import  CryptContext
 
 import re
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 
@@ -23,6 +29,9 @@ class JobSeeker(JobSeekerBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str = Field(nullable=False)
     avatar: str | None = None
+
+    def verify_password(self, password: str) -> bool:
+        return verify_password(password, self.hashed_password)
 
 
 class JobSeekerCreate(JobSeekerBase):
