@@ -49,7 +49,10 @@ def on_startup():
 
 
 ##### AUTHENTICATION #####
-oauth2_scheme_jobseeker = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme_jobseeker = OAuth2PasswordBearer(
+    tokenUrl="token", scheme_name="jobseeker authentication")
+oauth2_scheme_employer = OAuth2PasswordBearer(
+    tokenUrl="employer-token", scheme_name="employer authentication")
 
 
 class Token(BaseModel):
@@ -70,6 +73,17 @@ def authenticate_jobseeker(email: str, password: str):
         if not verify_password(password, job_seeker.hashed_password):
             return False
         return job_seeker
+
+
+def authenticate_employer(email: str, password: str):
+    with Session(engine) as session:
+        employer = session.exec(select(Employer).where(
+            Employer.email == email)).first()
+        if not employer:
+            return False
+        if not verify_password(password, employer.hashed_password):
+            return False
+        return employer
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -106,6 +120,29 @@ def get_current_jobseeker(token: Annotated[str, Depends(oauth2_scheme_jobseeker)
     return job_seeker
 
 
+def get_current_employer(token: Annotated[str, Depends(oauth2_scheme_employer)], session: Session = Depends(get_session)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt_decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except InvalidTokenError:
+        raise credentials_exception
+
+    employer = session.exec(select(Employer).where(
+        Employer.email == token_data.username)).first()
+
+    if employer is None:
+        raise credentials_exception
+    return employer
+
+
 @app.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -120,6 +157,24 @@ async def login_for_access_token(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": job_seeker.email}, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type="bearer")
+
+
+@app.post("/employer-token")
+async def login_for_access_token_employer(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+) -> Token:
+    employer = authenticate_employer(form_data.username, form_data.password)
+    if not employer:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": employer.email}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
 
@@ -229,14 +284,14 @@ def create_employer(*, session: Session = Depends(get_session), employer: Employ
 
 # Get all Employers
 @app.get("/employers/", response_model=list[EmployerPublic])
-def read_employers(*, session: Session = Depends(get_session)):
+def read_employers(*, session: Session = Depends(get_session), current_user: Employer = Depends(get_current_employer)):
     employers = session.exec(select(Employer)).all()
     return employers
 
 
 # Ger Employer by ID
 @app.get("/employers/{employer_id}", response_model=EmployerPublic)
-def read_employer(*, session: Session = Depends(get_session), employer_id: int):
+def read_employer(*, session: Session = Depends(get_session), employer_id: int, current_user: Employer = Depends(get_current_employer)):
     employer = session.get(Employer, employer_id)
     if not employer:
         raise HTTPException(status_code=404, detail="Employer not found")
@@ -245,7 +300,13 @@ def read_employer(*, session: Session = Depends(get_session), employer_id: int):
 
 # Update Employer by ID
 @app.patch("/employers/{employer_id}", response_model=EmployerPublic)
-def update_employer(*, session: Session = Depends(get_session), employer_id: int, employer: EmployerUpdate):
+def update_employer(*, session: Session = Depends(get_session), employer_id: int, employer: EmployerUpdate,
+                    current_user: Employer = Depends(get_current_employer)):
+
+    if current_user.id != employer_id:
+        raise HTTPException(
+            status_code=403, detail="Not authorized to update this profile")
+
     db_employer = session.get(Employer, employer_id)
     if not db_employer:
         raise HTTPException(status_code=404, detail="Employer not found")
@@ -266,7 +327,7 @@ def update_employer(*, session: Session = Depends(get_session), employer_id: int
 
 # Delete Employer by ID
 @app.delete("/employers/{employer_id}")
-def delete_employer(*, session: Session = Depends(get_session), employer_id: int):
+def delete_employer(*, session: Session = Depends(get_session), employer_id: int, current_user: Employer = Depends(get_current_employer)):
     employer = session.get(Employer, employer_id)
     if not employer:
         raise HTTPException(status_code=404, detail="Employer not found")
