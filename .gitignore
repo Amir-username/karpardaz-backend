@@ -25,7 +25,7 @@ ENV/
 *.log
 logs/
 *.sqlite
-*.db
+# *.db
 *.db-journal
 
 # Local development

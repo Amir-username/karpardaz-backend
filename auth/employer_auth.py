@@ -3,13 +3,14 @@ from sqlmodel import Session, select
 from ..database import engine
 from ..models import Employer
 from ..password import verify_password
-from typing import Annotated
+from typing import Annotated, Callable
 from fastapi import Depends, HTTPException, status
 from ..session.session import get_session
 from ..config import SECRET_KEY, ALGORITHM
 from .token import TokenData
 from jwt import decode as jwt_decode
 from jwt.exceptions import InvalidTokenError
+from ..session.session import get_Employer
 
 
 oauth2_scheme_employer = OAuth2PasswordBearer(
@@ -25,7 +26,7 @@ def authenticate_employer(email: str, password: str):
         if not verify_password(password, employer.hashed_password):
             return False
         return employer
-    
+
 
 def get_current_employer(token: Annotated[str, Depends(oauth2_scheme_employer)], session: Session = Depends(get_session)):
     credentials_exception = HTTPException(
@@ -42,8 +43,7 @@ def get_current_employer(token: Annotated[str, Depends(oauth2_scheme_employer)],
     except InvalidTokenError:
         raise credentials_exception
 
-    employer = session.exec(select(Employer).where(
-        Employer.email == token_data.username)).first()
+    employer = get_Employer(session, token_data)
 
     if employer is None:
         raise credentials_exception
