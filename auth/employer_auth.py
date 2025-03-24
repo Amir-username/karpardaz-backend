@@ -1,16 +1,15 @@
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from ..database import engine
 from ..models import Employer
 from ..password import verify_password
-from typing import Annotated, Callable
+from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from ..session.session import get_session
 from ..config import SECRET_KEY, ALGORITHM
 from .token import TokenData
 from jwt import decode as jwt_decode
 from jwt.exceptions import InvalidTokenError
-from ..session.session import get_Employer
 
 
 oauth2_scheme_employer = OAuth2PasswordBearer(
@@ -43,7 +42,8 @@ def get_current_employer(token: Annotated[str, Depends(oauth2_scheme_employer)],
     except InvalidTokenError:
         raise credentials_exception
 
-    employer = get_Employer(session, token_data)
+    employer = session.exec(select(Employer).where(
+        Employer.email == token_data.username)).first()
 
     if employer is None:
         raise credentials_exception

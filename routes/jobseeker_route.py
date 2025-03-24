@@ -17,7 +17,7 @@ from ..auth.jobseeker_auth import get_current_jobseeker
 
 jobseeker_router = APIRouter()
 
-@jobseeker_router.post("/token")
+@jobseeker_router.post("/jobseeker/login")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:

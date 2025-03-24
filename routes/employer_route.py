@@ -16,7 +16,7 @@ from ..auth.employer_auth import get_current_employer
 
 employer_router = APIRouter()
 
-@employer_router.post("/employer-token")
+@employer_router.post("/employer/login")
 async def login_for_access_token_employer(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
