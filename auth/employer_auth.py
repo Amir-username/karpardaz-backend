@@ -1,7 +1,7 @@
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from ..database import engine
-from ..models import Employer
+from ..models.Employer import Employer
 from ..password import verify_password
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
@@ -13,7 +13,7 @@ from jwt.exceptions import InvalidTokenError
 
 
 oauth2_scheme_employer = OAuth2PasswordBearer(
-    tokenUrl="employer-token", scheme_name="employer authentication")
+    tokenUrl="employer/login", scheme_name="employer authentication")
 
 
 def authenticate_employer(email: str, password: str):

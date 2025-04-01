@@ -7,14 +7,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 from ..auth.employer_auth import authenticate_employer
 from ..auth.token import Token, create_access_token
 from ..config import ACCESS_TOKEN_EXPIRE_MINUTES
-from ..models import Employer, EmployerCreate, EmployerPublic, EmployerUpdate
-
+from ..models.Employer import Employer, EmployerCreate, EmployerPublic, EmployerUpdate
 from sqlmodel import Session, select
 from ..session.session import get_session
 from ..password import get_password_hash
 from ..auth.employer_auth import get_current_employer
 
 employer_router = APIRouter()
+
 
 @employer_router.post("/employer/login")
 async def login_for_access_token_employer(
@@ -32,8 +32,6 @@ async def login_for_access_token_employer(
         data={"sub": employer.email}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
-
 
 
 # Employer CRUD

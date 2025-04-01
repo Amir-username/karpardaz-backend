@@ -8,7 +8,8 @@ from ..auth.jobseeker_auth import authenticate_jobseeker
 from ..auth.token import Token, create_access_token
 from ..config import ACCESS_TOKEN_EXPIRE_MINUTES
 
-from ..models import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
+# from ..models import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
+from ..models.JobSeeker import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
 from sqlmodel import Session, select
 from ..session.session import get_session
 from ..password import get_password_hash
@@ -16,6 +17,7 @@ from ..auth.jobseeker_auth import get_current_jobseeker
 
 
 jobseeker_router = APIRouter()
+
 
 @jobseeker_router.post("/jobseeker/login")
 async def login_for_access_token(
@@ -33,7 +35,6 @@ async def login_for_access_token(
         data={"sub": job_seeker.email}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
 
 
 # Job seeker CRUD
@@ -114,4 +115,3 @@ def delete_jobseeker(
     session.delete(db_jobseeker)
     session.commit()
     return {"message": "Job seeker deleted successfully"}
-
