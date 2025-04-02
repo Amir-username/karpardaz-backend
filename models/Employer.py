@@ -2,7 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from pydantic import EmailStr, field_validator
 import re
 from ..password import verify_password
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from .Advertise import Advertise
@@ -15,7 +15,7 @@ class EmployerBase(SQLModel):
 class Employer(EmployerBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str = Field(nullable=False)
-    job_advertisements: list["Advertise"] | None = Relationship(back_populates="employer")
+    job_advertisements: List["Advertise"] | None = Relationship(back_populates="employer")
 
     def verify_password(self, password: str) -> bool:
         return verify_password(password, self.hashed_password)
