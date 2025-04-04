@@ -4,7 +4,7 @@ from sqlalchemy import Column, JSON
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .Employer import Employer, EmployerPublic
+    from .Employer import Employer
 
 
 # Enums for restricted choice fields
@@ -17,6 +17,7 @@ class PositionEnum(str, Enum):
 class GenderEnum(str, Enum):
     MALE = "male"
     FEMALE = "female"
+    NO_DIFFERENCE = "no difference"
 
 
 class AdvertiseBase(SQLModel):
@@ -27,7 +28,7 @@ class AdvertiseBase(SQLModel):
     city: str = Field(..., max_length=50)
     is_remote: bool
     is_internship: bool
-    gender: GenderEnum
+    gender: GenderEnum = GenderEnum.NO_DIFFERENCE
     benefits: list[str] = Field(
         default_factory=list,
         sa_column=Column(JSON()),
@@ -36,7 +37,7 @@ class AdvertiseBase(SQLModel):
     technologies: list[str] = Field(
         default_factory=list,
         sa_column=Column(JSON()),
-        max_items=15
+        max_items=6
     )
     is_portfolio: bool
     description: str = Field(..., min_length=10, max_length=3000)
