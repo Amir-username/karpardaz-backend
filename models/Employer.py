@@ -7,16 +7,17 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from .Advertise import Advertise
 
+
 class EmployerBase(SQLModel):
     company_name: str = Field(index=True, min_length=1, max_length=200)
     email: EmailStr = Field(unique=True, index=True)
-    avatar: str | None = None
 
 
 class Employer(EmployerBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str = Field(nullable=False)
-    job_advertisements: List["Advertise"] | None = Relationship(back_populates="employer")
+    job_advertisements: List["Advertise"] | None = Relationship(
+        back_populates="employer", cascade_delete=True)
 
     def verify_password(self, password: str) -> bool:
         return verify_password(password, self.hashed_password)

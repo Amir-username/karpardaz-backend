@@ -59,14 +59,14 @@ def create_employer(*, session: Session = Depends(get_session), employer: Employ
 
 # Get all Employers
 @employer_router.get("/employers/", response_model=list[EmployerPublic])
-def read_employers(*, session: Session = Depends(get_session), current_user: Employer = Depends(get_current_employer)):
+def read_employers(*, session: Session = Depends(get_session)):
     employers = session.exec(select(Employer)).all()
     return employers
 
 
 # Ger Employer by ID
 @employer_router.get("/employers/{employer_id}", response_model=EmployerPublic)
-def read_employer(*, session: Session = Depends(get_session), employer_id: int, current_user: Employer = Depends(get_current_employer)):
+def read_employer(*, session: Session = Depends(get_session), employer_id: int):
     employer = session.get(Employer, employer_id)
     if not employer:
         raise HTTPException(status_code=404, detail="Employer not found")
