@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 class EmployerBase(SQLModel):
     company_name: str = Field(index=True, min_length=1, max_length=200)
     email: EmailStr = Field(unique=True, index=True)
+    avatar: str | None = None
 
 
 class Employer(EmployerBase, table=True):
