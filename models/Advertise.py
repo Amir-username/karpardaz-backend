@@ -20,10 +20,19 @@ class GenderEnum(str, Enum):
     NO_DIFFERENCE = "no difference"
 
 
+class SalaryEnum(str, Enum):
+    INTERN = "۵ تا ۱۰ میلیون تومان"
+    JUNIOR = "۱۰ تا ۲۰ میلیون تومان"
+    MIDLEVEL = "۲۰ تا ۴۰ میلیون تومان"
+    SENIOR = "۴۰ میلیون به بالا"
+    NEGOTIATED = "توافقی"
+
+
 class AdvertiseBase(SQLModel):
     title: str = Field(..., min_length=1, max_length=200)
     position: PositionEnum
     is_experience: bool
+    salary: SalaryEnum = SalaryEnum.NEGOTIATED
     job_group: str = Field(..., max_length=100)
     city: str = Field(..., max_length=50)
     is_remote: bool
