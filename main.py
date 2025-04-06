@@ -3,9 +3,8 @@ from .database import create_db_and_tables
 from .routes.employer_route import employer_router
 from .routes.jobseeker_route import jobseeker_router
 from .routes.advertise_route import advertise_router
+from .routes.employer_detail_route import employer_detail_router
 from fastapi.middleware.cors import CORSMiddleware
-from .models import EmployerDetail
-
 
 app = FastAPI()
 
@@ -34,3 +33,4 @@ def on_startup():
 app.include_router(employer_router)
 app.include_router(jobseeker_router)
 app.include_router(advertise_router)
+app.include_router(employer_detail_router)
