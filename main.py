@@ -4,6 +4,7 @@ from .routes.employer_route import employer_router
 from .routes.jobseeker_route import jobseeker_router
 from .routes.advertise_route import advertise_router
 from fastapi.middleware.cors import CORSMiddleware
+from .models import EmployerDetail
 
 
 app = FastAPI()

@@ -4,7 +4,7 @@ from sqlalchemy import Column, JSON
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .Employer import Employer
+    from .EmployerDetail import EmployerDetail
 
 
 # Enums for restricted choice fields
@@ -54,8 +54,8 @@ class AdvertiseBase(SQLModel):
 
 class Advertise(AdvertiseBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    employer_id: int = Field(foreign_key="employer.id", ondelete="CASCADE")
-    employer: "Employer" = Relationship(back_populates="job_advertisements")
+    employer_id: int = Field(foreign_key="employerdetail.id", ondelete="CASCADE")
+    employer: "EmployerDetail" = Relationship(back_populates="job_advertisements")
 
 
 class AdvertiseCreate(AdvertiseBase):
@@ -70,6 +70,7 @@ class AdvertisePublic(AdvertiseBase):
 class AdvertiseUpdate(AdvertiseBase):
     title: str | None = Field(None, min_length=1, max_length=200)
     position: PositionEnum | None = None
+    salary: SalaryEnum | None = None
     is_experience: bool | None = None
     job_group: str | None = Field(None, max_length=100)
     city: str | None = Field(None, max_length=50)
