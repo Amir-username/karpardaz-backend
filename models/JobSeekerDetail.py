@@ -1,5 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
-from typing import TYPE_CHECKING, List, Optional
+from sqlalchemy import Column, JSON
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from .JobSeeker import JobSeeker
@@ -8,11 +9,20 @@ if TYPE_CHECKING:
 
 class JobSeekerDetailBase(SQLModel):
     city: str = Field(max_length=50)
-    educations: List[str] = Field(default=[])
-    experiences: List[str] = Field(default=[])
+    educations: List[str] = Field(
+        default_factory=list,
+        sa_column=Column(JSON()),
+    )
+    experiences: List[str] = Field(
+        default_factory=list,
+        sa_column=Column(JSON()),
+    )
     avatar: str | None = Field(default=None)
     backdrop_image: str | None = Field(default=None)
-    specialized_jobs: List[str] = []
+    specialized_jobs: List[str] = Field(
+        default_factory=list,
+        sa_column=Column(JSON()),
+    )
 
 
 class JobSeekerDetailCreate(JobSeekerDetailBase):
@@ -23,7 +33,10 @@ class JobSeekerDetail(JobSeekerDetailBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     jobseeker_id: int | None = Field(default=None, foreign_key='jobseeker.id')
     jobseeker: 'JobSeeker' = Relationship(back_populates='detail')
-    liked_advertisements: List['Advertise'] = []
+    liked_advertisements: List['Advertise'] = Field(
+        default_factory=list,
+        sa_column=Column(JSON()),
+    )
 
 
 class JobSeekerDetailUpdate(JobSeekerDetailBase):
