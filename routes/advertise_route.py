@@ -94,7 +94,7 @@ def update_advertisement(
     db_advertisement = get_advertisement_or_404(
         id, session, current_employer.id)
 
-    update_data = advertisement.dict(exclude_unset=True)
+    update_data = advertisement.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_advertisement, key, value)
 
