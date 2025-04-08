@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, desc
 from ..models.Advertise import Advertise, AdvertiseCreate, AdvertisePublic, AdvertiseUpdate, GenderEnum, PositionEnum
 from ..models.Employer import Employer
+from ..models.EmployerDetail import EmployerDetail
 from ..auth.employer_auth import get_current_employer
 from ..session.session import get_session
 
@@ -33,10 +34,14 @@ def create_advertisement(
     session: Session = Depends(get_session),
     employer: Employer = Depends(get_current_employer)
 ):
+    query = select(EmployerDetail).where(EmployerDetail.employer_id == employer.id)
+    result = session.exec(query).first()
+
     ad = Advertise(
         title=advertisement.title,
         position=advertisement.position,
         is_experience=advertisement.is_experience,
+        salary=advertisement.salary,
         job_group=advertisement.job_group,
         is_remote=advertisement.is_remote,
         city=advertisement.city,
@@ -46,8 +51,8 @@ def create_advertisement(
         technologies=advertisement.technologies,
         is_portfolio=advertisement.is_portfolio,
         description=advertisement.description,
-        employer_id=employer.id,
-        employer=employer
+        employer_id=result.id,
+        employer=result
 
     )
     db_advertisement = Advertise.model_validate(ad)

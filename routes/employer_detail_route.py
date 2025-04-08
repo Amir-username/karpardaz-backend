@@ -18,6 +18,7 @@ def create_employer_detail(
     db = EmployerDetail.model_validate(detail)
     db.employer = employer
     db.employer_id = employer.id
+    db.company_name = employer.company_name
 
     session.add(db)
     session.commit()

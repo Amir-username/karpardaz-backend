@@ -31,6 +31,7 @@ class EmployerDetail(EmployerDetailBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     employer_id: int | None = Field(default=None, foreign_key='employer.id')
     employer: 'Employer' = Relationship(back_populates='detail')
+    company_name: str | None = Field(index=True, min_length=1, max_length=200, default=None)
     job_advertisements: List["Advertise"] | None = Relationship(
         back_populates="employer", cascade_delete=True)
 

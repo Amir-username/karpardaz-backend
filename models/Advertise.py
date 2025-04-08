@@ -54,7 +54,7 @@ class AdvertiseBase(SQLModel):
 
 class Advertise(AdvertiseBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    employer_id: int = Field(foreign_key="employerdetail.id", ondelete="CASCADE")
+    employer_id: int | None = Field(foreign_key="employerdetail.id", ondelete="CASCADE")
     employer: "EmployerDetail" = Relationship(back_populates="job_advertisements")
 
 
