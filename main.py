@@ -16,6 +16,7 @@ origins = [
     "http://localhost:3000",
     "http://localhost",
     "http://localhost:8080",
+    "https://karpardaz-frontend.vercel.app/"
 ]
 
 app.add_middleware(
