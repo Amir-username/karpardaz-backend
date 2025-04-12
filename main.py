@@ -12,17 +12,17 @@ app = FastAPI()
 
 
 # CORS setup
-origins = [
-    "https://karpardaz-frontend.vercel.app/",
-    "http://localhost:3000",
-    "http://localhost",
-    "http://localhost:8080",
-    # "https://karpardaz-frontend.vercel.app/"
-]
+# origins = [
+#     "https://karpardaz-frontend.vercel.app/",
+#     "http://localhost:3000",
+#     "http://localhost",
+#     "http://localhost:8080",
+#     "https://karpardaz-frontend.vercel.app/"
+# ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*']
