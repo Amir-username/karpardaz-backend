@@ -10,7 +10,7 @@ from ..config import ACCESS_TOKEN_EXPIRE_MINUTES
 
 # from ..models import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
 from ..models.JobSeeker import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 from ..session.session import get_session
 from ..password import get_password_hash
 from ..auth.jobseeker_auth import get_current_jobseeker
@@ -45,6 +45,16 @@ def create_jobseeker(
     jobseeker: JobSeekerCreate,
     session: Session = Depends(get_session),
 ):
+    query = select(JobSeeker).where(or_(jobseeker.email ==
+                                        JobSeeker.email, jobseeker.phonenumber == JobSeeker.phonenumber))
+    is_email_or_phonenumber_exist = session.exec(query).first()
+
+    if is_email_or_phonenumber_exist:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="email or phonenumber is already exists in db",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     hashed_password = get_password_hash(jobseeker.password)
     db_jobseeker = JobSeeker(**jobseeker.model_dump(),
@@ -60,7 +70,7 @@ def create_jobseeker(
 def read_jobseeker(
     jobseeker_id: int,
     session: Session = Depends(get_session),
-    current_user: JobSeeker = Depends(get_current_jobseeker)
+    # current_user: JobSeeker = Depends(get_current_jobseeker)
 ):
     jobseeker = session.get(JobSeeker, jobseeker_id)
     if not jobseeker:
@@ -70,7 +80,9 @@ def read_jobseeker(
 
 # Get all Jobseekers
 @jobseeker_router.get("/jobseekers/", response_model=list[JobSeekerPublic])
-def read_jobseekers(session: Session = Depends(get_session), current_user: JobSeeker = Depends(get_current_jobseeker)):
+def read_jobseekers(session: Session = Depends(get_session),
+                    # current_user: JobSeeker = Depends(get_current_jobseeker)
+                    ):
     jobseekers = session.exec(select(JobSeeker)).all()
     return jobseekers
 
