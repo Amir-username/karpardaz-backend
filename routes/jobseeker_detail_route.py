@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from ..models.Employer import Employer
 from ..models.JobSeekerDetail import JobSeekerDetail, JobSeekerDetailCreate, JobSeekerDetailUpdate
 from ..models.JobSeeker import JobSeeker
 from ..auth.jobseeker_auth import get_current_jobseeker
@@ -46,8 +45,8 @@ def read_jobseeker_detail(
 def update_jobseeker_detail(
     id: int,
     jobseeker_update: JobSeekerDetailUpdate,
-    jobseeker: JobSeeker = Depends(get_current_jobseeker),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    jobseeker: JobSeeker = Depends(get_current_jobseeker)
 ):
     query = select(JobSeekerDetail).where(JobSeekerDetail.id == id)
     result = session.exec(query).first()
@@ -64,11 +63,11 @@ def update_jobseeker_detail(
     return result
 
 
-@jobseeker_detail_router.delete('/jobseeker-detail/{id}', response_model=JobSeekerDetail)
+@jobseeker_detail_router.delete('/jobseeker-detail/{id}')
 def update_jobseeker_detail(
     id: int,
-    jobseeker: JobSeeker = Depends(get_current_jobseeker),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    jobseeker: JobSeeker = Depends(get_current_jobseeker)
 ):
     query = select(JobSeekerDetail).where(JobSeekerDetail.id == id)
     result = session.exec(query).first()
@@ -77,6 +76,6 @@ def update_jobseeker_detail(
         session.delete(result)
         session.commit()
 
-        return 'deleted employer detail'
+        return 'deleted jobseeker detail'
 
     return None

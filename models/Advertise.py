@@ -1,38 +1,13 @@
 from sqlmodel import SQLModel, Field, Relationship
-from enum import Enum
 from sqlalchemy import Column, JSON
 from typing import TYPE_CHECKING
+from ..Enums.position_enum import PositionEnum
+from ..Enums.experience_enum import ExperienceEnum
+from ..Enums.gender_enum import GenderEnum
+from ..Enums.salary_enum import SalaryEnum
 
 if TYPE_CHECKING:
     from .EmployerDetail import EmployerDetail
-
-
-# Enums for restricted choice fields
-class PositionEnum(str, Enum):
-    JUNIOR = "junior"
-    SENIOR = "senior"
-    MIDLEVEL = "midlevel"
-
-
-class GenderEnum(str, Enum):
-    MALE = "male"
-    FEMALE = "female"
-    NO_DIFFERENCE = "no difference"
-
-
-class SalaryEnum(str, Enum):
-    INTERN = "۵ تا ۱۰ میلیون تومان"
-    JUNIOR = "۱۰ تا ۲۰ میلیون تومان"
-    MIDLEVEL = "۲۰ تا ۴۰ میلیون تومان"
-    SENIOR = "۴۰ میلیون به بالا"
-    NEGOTIATED = "توافقی"
-
-
-class ExperienceEnum(str, Enum):
-    NO_EXPERIENSE = "بدون سابقه کار"
-    SHORT_EXPERIENCE = "۱ تا ۲ سال سابفه کار"
-    MEDIUM_EXPERIENEC = "۲ تا ۴ سال سابقه کار"
-    LONG_EXPERIENCE = "۴ سال به بالا"
 
 
 class AdvertiseBase(SQLModel):

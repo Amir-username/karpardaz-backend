@@ -1,17 +1,11 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING, List, Optional
-from enum import Enum
+from ..Enums.population_enum import PopulationEnum
+
 
 if TYPE_CHECKING:
     from .Advertise import Advertise
     from .Employer import Employer
-
-
-class PopulationEnum(str, Enum):
-    SMALL = '۵ تا ۲۰ نفر'
-    MEDIUM = '۲۰ تا ۵۰ نفر'
-    LARGE = '۵۰ تا ۱۰۰ نفر'
-    VERY_LARGE = '۱۰۰ نفر به بالا'
 
 
 class EmployerDetailBase(SQLModel):

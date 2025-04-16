@@ -1,7 +1,12 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 from pydantic import EmailStr, field_validator
 import re
 from ..password import verify_password
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from .JobSeekerDetail import JobSeekerDetail
 
 
 class JobSeekerBase(SQLModel):
@@ -22,6 +27,7 @@ class JobSeeker(JobSeekerBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     hashed_password: str = Field(nullable=False)
     avatar: str | None = None
+    detail: 'JobSeekerDetail' = Relationship(back_populates='jobseeker')
 
     def verify_password(self, password: str) -> bool:
         return verify_password(password, self.hashed_password)
