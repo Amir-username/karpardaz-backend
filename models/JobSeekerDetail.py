@@ -5,6 +5,7 @@ from ..Enums.experience_enum import ExperienceEnum
 
 if TYPE_CHECKING:
     from .JobSeeker import JobSeeker
+    from .JobSeekerAd import JobSeekerAd
 
 
 class JobSeekerDetailBase(SQLModel):
@@ -32,6 +33,8 @@ class JobSeekerDetail(JobSeekerDetailBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     jobseeker_id: int | None = Field(default=None, foreign_key='jobseeker.id')
     jobseeker: 'JobSeeker' = Relationship(back_populates='detail')
+    job_advertisements: List['JobSeekerAd'] | None = Relationship(
+        back_populates="jobseeker", cascade_delete=True)
 
 
 class JobSeekerDetailUpdate(JobSeekerDetailBase):
