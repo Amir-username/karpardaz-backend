@@ -28,10 +28,17 @@ class SalaryEnum(str, Enum):
     NEGOTIATED = "توافقی"
 
 
+class ExperienceEnum(str, Enum):
+    NO_EXPERIENSE = "بدون سابقه کار"
+    SHORT_EXPERIENCE = "۱ تا ۲ سال سابفه کار"
+    MEDIUM_EXPERIENEC = "۲ تا ۴ سال سابقه کار"
+    LONG_EXPERIENCE = "۴ سال به بالا"
+
+
 class AdvertiseBase(SQLModel):
     title: str = Field(..., min_length=1, max_length=200)
     position: PositionEnum
-    is_experience: bool
+    experience: ExperienceEnum = ExperienceEnum.NO_EXPERIENSE
     salary: SalaryEnum = SalaryEnum.NEGOTIATED
     job_group: str = Field(..., max_length=100)
     city: str = Field(..., max_length=50)
@@ -71,7 +78,7 @@ class AdvertiseUpdate(AdvertiseBase):
     title: str | None = Field(None, min_length=1, max_length=200)
     position: PositionEnum | None = None
     salary: SalaryEnum | None = None
-    is_experience: bool | None = None
+    experience: ExperienceEnum | None = None
     job_group: str | None = Field(None, max_length=100)
     city: str | None = Field(None, max_length=50)
     is_remote: bool | None = None
