@@ -36,10 +36,10 @@ def on_startup():
     create_db_and_tables()
 
 
-app.include_router(employer_router)
-app.include_router(jobseeker_router)
-app.include_router(advertise_router)
-app.include_router(employer_detail_router)
-app.include_router(search_router)
-app.include_router(jobseeker_detail_router)
-app.include_router(jobseeker_advertise_router)
+app.include_router(employer_router, tags=["Employers"])
+app.include_router(jobseeker_router, tags=["Jobseekers"])
+app.include_router(advertise_router, tags=["Employer Advertisements"])
+app.include_router(employer_detail_router, tags=["Employers Detail"])
+app.include_router(search_router, tags=["Search Advertisements"])
+app.include_router(jobseeker_detail_router, tags=["Jobseekers Detail"])
+app.include_router(jobseeker_advertise_router, tags=["Jobseeker Advertisements"])
