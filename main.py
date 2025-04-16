@@ -6,6 +6,7 @@ from .routes.advertise_route import advertise_router
 from .routes.employer_detail_route import employer_detail_router
 from .routes.advertise_search_route import search_router
 from .routes.jobseeker_detail_route import jobseeker_detail_router
+from .routes.jobseeker_advertise_route import jobseeker_advertise_router
 from fastapi.middleware.cors import CORSMiddleware
 from .models.JobSeekerAd import JobSeekerAd
 
@@ -41,3 +42,4 @@ app.include_router(advertise_router)
 app.include_router(employer_detail_router)
 app.include_router(search_router)
 app.include_router(jobseeker_detail_router)
+app.include_router(jobseeker_advertise_router)
