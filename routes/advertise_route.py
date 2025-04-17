@@ -40,7 +40,7 @@ def create_advertisement(
     ad = Advertise(
         title=advertisement.title,
         position=advertisement.position,
-        experience=advertisement.is_experience,
+        experience=advertisement.experience,
         salary=advertisement.salary,
         job_group=advertisement.job_group,
         is_remote=advertisement.is_remote,

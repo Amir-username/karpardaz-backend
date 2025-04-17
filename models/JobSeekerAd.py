@@ -37,7 +37,7 @@ class JobSeekerAdCreate(JobSeekerAdBase):
 class JobSeekerAd(JobSeekerAdBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     jobseeker_id: int | None = Field(
-        foreign_key='jobseeker.id', ondelete='CASCADE')
+        foreign_key='jobseekerdetail.id', ondelete='CASCADE')
     jobseeker: 'JobSeekerDetail' = Relationship(
         back_populates='job_advertisements')
 
