@@ -38,9 +38,11 @@ def create_jobseeker_ad(
     result = session.exec(query).first()
 
     ad = JobSeekerAd(
+        firstname=advertisement.firstname,
+        lastname=advertisement.lastname,
         title=advertisement.title,
         position=advertisement.position,
-        experience=advertisement.is_experience,
+        experience=advertisement.experience,
         salary=advertisement.salary,
         job_group=advertisement.job_group,
         is_remote=advertisement.is_remote,
@@ -49,11 +51,14 @@ def create_jobseeker_ad(
         technologies=advertisement.technologies,
         is_portfolio=advertisement.is_portfolio,
         description=advertisement.description,
-        jobseeker_id=advertisement.jobseeker_id,
-        jobseeker=advertisement.jobseeker_id
-
+        jobseeker_id=result.jobseeker_id,
+        jobseeker=result,
     )
+
+
     db_advertisement = JobSeekerAd.model_validate(ad)
+    # db_advertisement.jobseeker_id = result.jobseeker_id
+    # db_advertisement.jobseeker = result.jobseeker
     session.add(db_advertisement)
     session.commit()
     session.refresh(db_advertisement)
