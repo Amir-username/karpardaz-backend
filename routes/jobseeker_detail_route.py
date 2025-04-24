@@ -12,12 +12,14 @@ jobseeker_detail_router = APIRouter()
 @jobseeker_detail_router.post('/jobseeker-detail/', response_model=JobSeekerDetail)
 def create_jobseeker_detail(
     detail: JobSeekerDetailCreate,
-    jobseekr: JobSeeker = Depends(get_current_jobseeker),
+    jobseeker: JobSeeker = Depends(get_current_jobseeker),
     session: Session = Depends(get_session)
 ):
     db = JobSeekerDetail.model_validate(detail)
-    db.jobseeker = jobseekr
-    db.jobseeker_id = jobseekr.id
+    db.firstname = jobseeker.firstname
+    db.lastname = jobseeker.lastname
+    db.jobseeker = jobseeker
+    db.jobseeker_id = jobseeker.id
 
     session.add(db)
     session.commit()

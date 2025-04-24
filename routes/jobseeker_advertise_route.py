@@ -34,27 +34,27 @@ def create_jobseeker_ad(
     session: Session = Depends(get_session),
     jobseeker: JobSeeker = Depends(get_current_jobseeker)
 ):
-    query = select(JobSeekerDetail).where(JobSeekerDetail.jobseeker_id == jobseeker.id)
+    query = select(JobSeekerDetail).where(
+        JobSeekerDetail.jobseeker_id == jobseeker.id)
     result = session.exec(query).first()
 
     ad = JobSeekerAd(
-        firstname=advertisement.firstname,
-        lastname=advertisement.lastname,
+        firstname=result.firstname,
+        lastname=result.lastname,
         title=advertisement.title,
-        position=advertisement.position,
-        experience=advertisement.experience,
-        salary=advertisement.salary,
-        job_group=advertisement.job_group,
-        is_remote=advertisement.is_remote,
-        is_internship=advertisement.is_internship,
-        gender=advertisement.gender,
-        technologies=advertisement.technologies,
-        is_portfolio=advertisement.is_portfolio,
+        position=result.position,
+        experience=result.experience,
+        salary=result.salary,
+        job_group=result.job_group,
+        is_remote=result.is_remote,
+        is_internship=result.is_internship,
+        gender=result.gender,
+        technologies=result.technologies,
+        is_portfolio=result.is_portfolio,
         description=advertisement.description,
         jobseeker_id=result.jobseeker_id,
         jobseeker=result,
     )
-
 
     db_advertisement = JobSeekerAd.model_validate(ad)
     # db_advertisement.jobseeker_id = result.jobseeker_id
@@ -63,8 +63,6 @@ def create_jobseeker_ad(
     session.commit()
     session.refresh(db_advertisement)
     return db_advertisement
-
-
 
 
 @jobseeker_advertise_router.get("/jobseeker-ads/", response_model=list[JobSeekerAd])
@@ -113,8 +111,6 @@ def update_jobseeker_ad(
     session.refresh(db_advertisement)
 
     return db_advertisement
-
-
 
 
 @jobseeker_advertise_router.delete("/jobseeker-ads/{id}", status_code=status.HTTP_204_NO_CONTENT)
