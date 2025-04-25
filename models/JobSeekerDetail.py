@@ -39,6 +39,7 @@ class JobSeekerDetailBase(SQLModel):
         max_items=6
     )
     is_portfolio: bool
+    description: str = Field(..., min_length=10, max_length=3000)
 
 
 class JobSeekerDetailCreate(JobSeekerDetailBase):
@@ -72,3 +73,4 @@ class JobSeekerDetailUpdate(SQLModel):
     gender: GenderEnum | None = None
     technologies: list[str] | None = None
     is_portfolio: bool | None = None
+    description: str | None = None

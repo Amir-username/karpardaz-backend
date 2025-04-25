@@ -43,6 +43,10 @@ class JobSeekerAd(JobSeekerAdBase, table=True):
         max_items=6
     )
     is_portfolio: bool | None = None
+    jobseeker_id: int | None = Field(
+        foreign_key='jobseekerdetail.id', ondelete='CASCADE')
+    jobseeker: 'JobSeekerDetail' = Relationship(
+        back_populates='job_advertisements')
 
 
 class JobSeekrAdUpdate(SQLModel):
