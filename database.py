@@ -10,5 +10,5 @@ def create_db_and_tables():
 
 def delete_jdetail_table():
     with engine.connect() as conn:
-        conn.execute(text("DROP TABLE IF EXISTS jobseekerad"))
+        conn.execute(text("DROP TABLE IF EXISTS jobseekerdetail"))
         conn.commit()

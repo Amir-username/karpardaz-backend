@@ -9,6 +9,7 @@ from .routes.jobseeker_detail_route import jobseeker_detail_router
 from .routes.jobseeker_advertise_route import jobseeker_advertise_router
 from .routes.jobseeker_ad_search_route import joseeker_ad_search_router
 from fastapi.middleware.cors import CORSMiddleware
+from .models.Resume import Resume
 
 
 app = FastAPI()
@@ -36,7 +37,6 @@ app.add_middleware(
 def on_startup():
     create_db_and_tables()
     # delete_jdetail_table()
-
 
 
 app.include_router(employer_router, tags=["Employers"])

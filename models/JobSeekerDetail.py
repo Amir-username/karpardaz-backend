@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import Column, JSON
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from ..Enums.experience_enum import ExperienceEnum
 from ..Enums.gender_enum import GenderEnum
 from ..Enums.salary_enum import SalaryEnum
@@ -9,6 +9,7 @@ from ..Enums.position_enum import PositionEnum
 if TYPE_CHECKING:
     from .JobSeeker import JobSeeker
     from .JobSeekerAd import JobSeekerAd
+    from .Resume import Resume
 
 
 class JobSeekerDetailBase(SQLModel):
@@ -39,6 +40,7 @@ class JobSeekerDetailBase(SQLModel):
         max_items=6
     )
     is_portfolio: bool
+    portfolio_link: str | None = Field(default=None)
     description: str = Field(..., min_length=10, max_length=3000)
 
 
@@ -56,6 +58,8 @@ class JobSeekerDetail(JobSeekerDetailBase, table=True):
         default=None, index=True, min_length=1, max_length=50)
     lastname: str | None = Field(
         default=None, index=True, min_length=1, max_length=50)
+    resume: Optional['Resume'] = Relationship(
+        back_populates='jobseeker', cascade_delete=True)
 
 
 class JobSeekerDetailUpdate(SQLModel):
@@ -73,4 +77,5 @@ class JobSeekerDetailUpdate(SQLModel):
     gender: GenderEnum | None = None
     technologies: list[str] | None = None
     is_portfolio: bool | None = None
+    portfolio_link: str | None = None
     description: str | None = None
