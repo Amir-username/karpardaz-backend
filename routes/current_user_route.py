@@ -10,7 +10,7 @@ from ..models.JobSeekerDetail import JobSeekerDetail
 current_user_router = APIRouter()
 
 
-@current_user_router.get('/current-jobseeker/', response_model=JobSeekerDetail)
+@current_user_router.get('/current-jobseeker/')
 def current_jobseeker(
     jobseeker: JobSeekerDetail = Depends(get_current_jobseeker),
     session: Session = Depends(get_session)
@@ -19,10 +19,13 @@ def current_jobseeker(
         JobSeekerDetail.jobseeker_id == jobseeker.id)
     result = session.exec(query).first()
 
-    return result
+    if result:
+        return result
+    else:
+        return jobseeker
 
 
-@current_user_router.get('/current-employer/', response_model=EmployerDetail)
+@current_user_router.get('/current-employer/')
 def current_employer(
     employer: EmployerDetail = Depends(get_current_employer),
     session: Session = Depends(get_session)
@@ -31,4 +34,7 @@ def current_employer(
         EmployerDetail.employer_id == employer.id)
     result = session.exec(query).first()
 
-    return result
+    if result:
+        return result
+    else:
+        return employer
