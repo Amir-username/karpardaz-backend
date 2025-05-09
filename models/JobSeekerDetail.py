@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from .JobSeeker import JobSeeker
     from .JobSeekerAd import JobSeekerAd
     from .Resume import Resume
+    from .JobSeekerAvatar import JobSeekerAvatar
 
 
 class JobSeekerDetailBase(SQLModel):
@@ -19,7 +20,6 @@ class JobSeekerDetailBase(SQLModel):
         sa_column=Column(JSON()),
         max_items=4
     )
-    avatar: str | None = Field(default=None)
     backdrop_image: str | None = Field(default=None)
     specialized_jobs: List[str] = Field(
         default_factory=list,
@@ -43,7 +43,6 @@ class JobSeekerDetailBase(SQLModel):
     portfolio_link: str | None = Field(default=None)
     description: str = Field(..., min_length=10, max_length=3000)
 
-
 class JobSeekerDetailCreate(JobSeekerDetailBase):
     pass
 
@@ -60,6 +59,9 @@ class JobSeekerDetail(JobSeekerDetailBase, table=True):
         default=None, index=True, min_length=1, max_length=50)
     resume: Optional['Resume'] = Relationship(
         back_populates='jobseeker', cascade_delete=True)
+    avatar: Optional['JobSeekerAvatar'] = Relationship(
+        back_populates='jobseeker', cascade_delete=True)
+
 
 
 class JobSeekerDetailUpdate(SQLModel):

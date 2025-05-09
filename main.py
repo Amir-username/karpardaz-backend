@@ -10,6 +10,7 @@ from .routes.jobseeker_advertise_route import jobseeker_advertise_router
 from .routes.jobseeker_ad_search_route import joseeker_ad_search_router
 from .routes.resume_route import resume_router
 from .routes.current_user_route import current_user_router
+from .routes.jobseeker_avatar_route import jobseeker_avatar_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -51,4 +52,5 @@ app.include_router(jobseeker_advertise_router, tags=[
 app.include_router(joseeker_ad_search_router, tags=[
                    "Search Jobseeker Advertisements"])
 app.include_router(resume_router, tags=['Resume'])
+app.include_router(jobseeker_avatar_router, tags=['Jobseeker Avatar'])
 app.include_router(current_user_router, tags=['Current User'])
