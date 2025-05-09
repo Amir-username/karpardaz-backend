@@ -73,6 +73,14 @@ def read_jobseeker_ads(session: Session = Depends(get_session), offset: int = 0,
     return results
 
 
+@jobseeker_advertise_router.get("/jobseeker-own-ads/{jobseeker_id}", response_model=list[JobSeekerAd])
+def read_jobseeker_ads(jobseeker_id, session: Session = Depends(get_session)):
+    statement = select(JobSeekerAd).order_by(
+        desc(JobSeekerAd.id)).where(JobSeekerAd.jobseeker_id == jobseeker_id)
+    results = session.exec(statement).all()
+    return results
+
+
 @jobseeker_advertise_router.get("/jobseeker-ads/{ad_id}", response_model=JobSeekerAd)
 def read_jobseeker_ad(ad_id: int, session: Session = Depends(get_session)):
     advertisement = session.get(JobSeekerAd, ad_id)

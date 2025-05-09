@@ -34,7 +34,8 @@ def create_advertisement(
     session: Session = Depends(get_session),
     employer: Employer = Depends(get_current_employer)
 ):
-    query = select(EmployerDetail).where(EmployerDetail.employer_id == employer.id)
+    query = select(EmployerDetail).where(
+        EmployerDetail.employer_id == employer.id)
     result = session.exec(query).first()
 
     ad = Advertise(
@@ -66,6 +67,14 @@ def create_advertisement(
 def read_advertisements(session: Session = Depends(get_session), offset: int = 0, limit: int = 10):
     statement = select(Advertise).order_by(
         desc(Advertise.id)).offset(offset).limit(limit)
+    results = session.exec(statement).all()
+    return results
+
+
+@advertise_router.get("/employer-ads/{employer_id}", response_model=list[AdvertisePublic])
+def read_advertisements_by_employer(employer_id: int, session: Session = Depends(get_session)):
+    statement = select(Advertise).order_by(
+        desc(Advertise.id)).where(Advertise.employer_id == employer_id)
     results = session.exec(statement).all()
     return results
 

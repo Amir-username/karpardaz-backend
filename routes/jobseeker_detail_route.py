@@ -36,6 +36,8 @@ def read_jobseeker_detail(
     query = select(JobSeekerDetail).where(JobSeekerDetail.id == id)
     result = session.exec(query).first()
 
+    print(result)
+
     session.add(result)
     session.commit()
     session.refresh(result)
