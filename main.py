@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from .database import create_db_and_tables, delete_jdetail_table
+from .database import create_db_and_tables
 from .routes.employer_route import employer_router
+from .routes.jobseeker_liked_ads_route import jobseeker_liked_ads_router
 from .routes.jobseeker_route import jobseeker_router
 from .routes.advertise_route import advertise_router
 from .routes.employer_detail_route import employer_detail_router
@@ -46,6 +47,7 @@ app.include_router(employer_detail_router, tags=["Employers Detail"])
 app.include_router(advertise_router, tags=["Employer Advertisements"])
 app.include_router(search_router, tags=["Search Advertisements"])
 app.include_router(jobseeker_router, tags=["Jobseekers"])
+app.include_router(jobseeker_liked_ads_router, tags=['Liked Advertisements'])
 app.include_router(jobseeker_detail_router, tags=["Jobseekers Detail"])
 app.include_router(jobseeker_advertise_router, tags=[
                    "Jobseeker Advertisements"])

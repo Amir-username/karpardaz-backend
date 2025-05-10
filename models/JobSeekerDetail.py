@@ -5,12 +5,14 @@ from ..Enums.experience_enum import ExperienceEnum
 from ..Enums.gender_enum import GenderEnum
 from ..Enums.salary_enum import SalaryEnum
 from ..Enums.position_enum import PositionEnum
+from .JobSeekerLikedAdsLink import JobSeekerLikedAdsLink
 
 if TYPE_CHECKING:
     from .JobSeeker import JobSeeker
     from .JobSeekerAd import JobSeekerAd
     from .Resume import Resume
     from .JobSeekerAvatar import JobSeekerAvatar
+    from .Advertise import Advertise
 
 
 class JobSeekerDetailBase(SQLModel):
@@ -43,6 +45,7 @@ class JobSeekerDetailBase(SQLModel):
     portfolio_link: str | None = Field(default=None)
     description: str = Field(..., min_length=10, max_length=3000)
 
+
 class JobSeekerDetailCreate(JobSeekerDetailBase):
     pass
 
@@ -61,7 +64,8 @@ class JobSeekerDetail(JobSeekerDetailBase, table=True):
         back_populates='jobseeker', cascade_delete=True)
     avatar: Optional['JobSeekerAvatar'] = Relationship(
         back_populates='jobseeker', cascade_delete=True)
-
+    liked_advertisements: Optional[List['Advertise']] = Relationship(
+        back_populates="jobseeker_likeds", link_model=JobSeekerLikedAdsLink)
 
 
 class JobSeekerDetailUpdate(SQLModel):

@@ -1,13 +1,15 @@
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import Column, JSON
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional
 from ..Enums.position_enum import PositionEnum
 from ..Enums.experience_enum import ExperienceEnum
 from ..Enums.gender_enum import GenderEnum
 from ..Enums.salary_enum import SalaryEnum
+from .JobSeekerLikedAdsLink import JobSeekerLikedAdsLink
 
 if TYPE_CHECKING:
     from .EmployerDetail import EmployerDetail
+    from .JobSeekerDetail import JobSeekerDetail
 
 
 class AdvertiseBase(SQLModel):
@@ -36,8 +38,14 @@ class AdvertiseBase(SQLModel):
 
 class Advertise(AdvertiseBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    employer_id: int | None = Field(foreign_key="employerdetail.id", ondelete="CASCADE")
-    employer: "EmployerDetail" = Relationship(back_populates="job_advertisements")
+    employer_id: int | None = Field(
+        foreign_key="employerdetail.id", ondelete="CASCADE")
+    employer: "EmployerDetail" = Relationship(
+        back_populates="job_advertisements")
+    jobseeker_likeds: Optional[List['JobSeekerDetail']] = Relationship(
+        back_populates="liked_advertisements",
+        link_model=JobSeekerLikedAdsLink,
+    )
 
 
 class AdvertiseCreate(AdvertiseBase):
