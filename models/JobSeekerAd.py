@@ -5,11 +5,11 @@ from ..Enums.position_enum import PositionEnum
 from ..Enums.experience_enum import ExperienceEnum
 from ..Enums.gender_enum import GenderEnum
 from ..Enums.salary_enum import SalaryEnum
+from .EmployerLikedAdsLink import EmployerLikedAdsLink
 
 if TYPE_CHECKING:
     from .JobSeekerDetail import JobSeekerDetail
     from .EmployerDetail import EmployerDetail
-    from .EmployerLikedAdsLink import EmployerLikedAdsLink
 
 
 class JobSeekerAdBase(SQLModel):
@@ -50,7 +50,7 @@ class JobSeekerAd(JobSeekerAdBase, table=True):
         foreign_key='jobseekerdetail.id', ondelete='CASCADE')
     jobseeker: 'JobSeekerDetail' = Relationship(
         back_populates='job_advertisements')
-    employer_likeds: Optional[List[EmployerDetail]] = Relationship(
+    employer_likeds: Optional[List['EmployerDetail']] = Relationship(
         back_populates="liked_jobseeker_ads",
         link_model=EmployerLikedAdsLink,
     )
