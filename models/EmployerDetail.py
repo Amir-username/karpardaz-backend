@@ -6,6 +6,8 @@ from ..Enums.population_enum import PopulationEnum
 if TYPE_CHECKING:
     from .Advertise import Advertise
     from .Employer import Employer
+    from .JobSeekerAd import JobSeekerAd
+    from .EmployerLikedAdsLink import EmployerLikedAdsLink
 
 
 class EmployerDetailBase(SQLModel):
@@ -29,6 +31,8 @@ class EmployerDetail(EmployerDetailBase, table=True):
         index=True, min_length=1, max_length=200, default=None)
     job_advertisements: List["Advertise"] | None = Relationship(
         back_populates="employer", cascade_delete=True)
+    liked_jobseeker_ads: Optional[List[JobSeekerAd]] = Relationship(
+        back_populates="employer_likeds", link_model=EmployerLikedAdsLink)
 
 
 class EmployerDetailUpdate(EmployerDetailBase):
