@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from .Resume import Resume
     from .JobSeekerAvatar import JobSeekerAvatar
     from .Advertise import Advertise
+    from .JobSeekerBackdrop import JobSeekerBackdrop
 
 
 class JobSeekerDetailBase(SQLModel):
@@ -22,7 +23,6 @@ class JobSeekerDetailBase(SQLModel):
         sa_column=Column(JSON()),
         max_items=4
     )
-    backdrop_image: str | None = Field(default=None)
     specialized_jobs: List[str] = Field(
         default_factory=list,
         sa_column=Column(JSON()),
@@ -63,6 +63,8 @@ class JobSeekerDetail(JobSeekerDetailBase, table=True):
     resume: Optional['Resume'] = Relationship(
         back_populates='jobseeker', cascade_delete=True)
     avatar: Optional['JobSeekerAvatar'] = Relationship(
+        back_populates='jobseeker', cascade_delete=True)
+    backdrop_image: Optional['JobSeekerBackdrop'] = Relationship(
         back_populates='jobseeker', cascade_delete=True)
     liked_advertisements: Optional[List['Advertise']] = Relationship(
         back_populates="jobseeker_likeds", link_model=JobSeekerLikedAdsLink)
