@@ -4,16 +4,16 @@ from typing import Annotated
 
 from fastapi.security import OAuth2PasswordRequestForm
 
-from ..auth.jobseeker_auth import authenticate_jobseeker
-from ..auth.token import Token, create_access_token
-from ..config import ACCESS_TOKEN_EXPIRE_MINUTES
+from ...auth.jobseeker_auth import authenticate_jobseeker
+from ...auth.token import Token, create_access_token
+from ...config import ACCESS_TOKEN_EXPIRE_MINUTES
 
 # from ..models import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
-from ..models.JobSeeker import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
+from ...models.JobSeeker import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
 from sqlmodel import Session, select, or_
-from ..session.session import get_session
-from ..password import get_password_hash
-from ..auth.jobseeker_auth import get_current_jobseeker
+from ...session.session import get_session
+from ...password import get_password_hash
+from ...auth.jobseeker_auth import get_current_jobseeker
 
 
 jobseeker_router = APIRouter()

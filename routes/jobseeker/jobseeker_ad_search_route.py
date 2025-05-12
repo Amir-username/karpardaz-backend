@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query
-from ..session.session import get_session
-from ..models.JobSeekerAd import JobSeekerAd
+from ...session.session import get_session
+from ...models.JobSeekerAd import JobSeekerAd
 from sqlmodel import Session, select, or_, desc
 
 

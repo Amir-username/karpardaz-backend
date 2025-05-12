@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response
 from sqlmodel import Session, select
-from ..auth.jobseeker_auth import get_current_jobseeker
-from ..models.JobSeekerBackdrop import JobSeekerBackdrop
-from ..models.JobSeeker import JobSeeker
-from ..models.JobSeekerDetail import JobSeekerDetail
-from ..session.session import get_session
+from ...auth.jobseeker_auth import get_current_jobseeker
+from ...models.JobSeekerBackdrop import JobSeekerBackdrop
+from ...models.JobSeeker import JobSeeker
+from ...models.JobSeekerDetail import JobSeekerDetail
+from ...session.session import get_session
 
 
 jobseeker_backdrop_router = APIRouter()

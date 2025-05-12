@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from ..models.Employer import Employer
-from ..models.EmployerDetail import EmployerDetail, EmployerDetailCreate, EmployerDetailUpdate
-from ..auth.employer_auth import get_current_employer
-from ..session.session import get_session
+from ...models.Employer import Employer
+from ...models.EmployerDetail import EmployerDetail, EmployerDetailCreate, EmployerDetailUpdate
+from ...auth.employer_auth import get_current_employer
+from ...session.session import get_session
 
 
 employer_detail_router = APIRouter()

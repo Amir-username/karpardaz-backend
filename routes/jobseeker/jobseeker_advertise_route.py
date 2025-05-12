@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, desc
-from ..models.JobSeekerAd import JobSeekerAd, JobSeekerAdCreate, JobSeekrAdUpdate
-from ..models.JobSeeker import JobSeeker
-from ..models.JobSeekerDetail import JobSeekerDetail
-from ..auth.jobseeker_auth import get_current_jobseeker
-from ..session.session import get_session
+from ...models.JobSeekerAd import JobSeekerAd, JobSeekerAdCreate, JobSeekrAdUpdate
+from ...models.JobSeeker import JobSeeker
+from ...models.JobSeekerDetail import JobSeekerDetail
+from ...auth.jobseeker_auth import get_current_jobseeker
+from ...session.session import get_session
 
 
 jobseeker_advertise_router = APIRouter()

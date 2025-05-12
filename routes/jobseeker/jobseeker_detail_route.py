@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from ..models.JobSeekerDetail import JobSeekerDetail, JobSeekerDetailCreate, JobSeekerDetailUpdate
-from ..models.JobSeeker import JobSeeker
-from ..auth.jobseeker_auth import get_current_jobseeker
-from ..session.session import get_session
+from ...models.JobSeekerDetail import JobSeekerDetail, JobSeekerDetailCreate, JobSeekerDetailUpdate
+from ...models.JobSeeker import JobSeeker
+from ...auth.jobseeker_auth import get_current_jobseeker
+from ...session.session import get_session
 
 
 jobseeker_detail_router = APIRouter()

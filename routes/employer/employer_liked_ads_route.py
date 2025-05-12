@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..auth.employer_auth import get_current_employer
-from ..models.Employer import Employer
+from ...auth.employer_auth import get_current_employer
+from ...models.Employer import Employer
 from sqlmodel import Session, select
-from ..session.session import get_session
-from ..models.EmployerDetail import EmployerDetail
-from ..models.JobSeekerAd import JobSeekerAd
+from ...session.session import get_session
+from ...models.EmployerDetail import EmployerDetail
+from ...models.JobSeekerAd import JobSeekerAd
 
 employer_liked_ads_router = APIRouter()
 
