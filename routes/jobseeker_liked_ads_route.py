@@ -57,3 +57,20 @@ def advertise_dislike(
         raise HTTPException(404, 'jobseeker detail not found')
 
     return None
+
+
+@jobseeker_liked_ads_router.get('/jobseeker-favorites/')
+def jobseeker_favorites(
+    jobseeker: JobSeeker = Depends(get_current_jobseeker),
+    session: Session = Depends(get_session)
+):
+    jobseeker_detail_query = select(JobSeekerDetail).where(
+        JobSeekerDetail.jobseeker_id == jobseeker.id)
+    jobseeker_detail = session.exec(jobseeker_detail_query).first()
+
+    if not jobseeker_detail:
+        raise HTTPException(404, 'jobseeker detail not found')
+
+    favorites = jobseeker_detail.liked_advertisements
+
+    return favorites
