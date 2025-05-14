@@ -52,7 +52,7 @@ def advertise_dislike(
             session.commit()
             session.refresh(employer_detail)
 
-            return employer_detail.liked_advertisements
+            return employer_detail.liked_jobseeker_ads
     else:
         raise HTTPException(404, 'employer detail not found')
 
