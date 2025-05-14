@@ -73,4 +73,6 @@ def jobseeker_favorites(
 
     favorites = jobseeker_detail.liked_advertisements
 
-    return favorites
+    ids = (fav.id for fav in favorites)
+
+    return ids

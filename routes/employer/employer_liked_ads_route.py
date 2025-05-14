@@ -57,3 +57,22 @@ def advertise_dislike(
         raise HTTPException(404, 'employer detail not found')
 
     return None
+
+
+@employer_liked_ads_router.get('/employer-favorites/')
+def employer_favorites(
+    employer: Employer = Depends(get_current_employer),
+    session: Session = Depends(get_session)
+):
+    employer_detail_query = select(EmployerDetail).where(
+        EmployerDetail.employer_id == employer.id)
+    employer_detail = session.exec(employer_detail_query).first()
+
+    if not employer_detail:
+        raise HTTPException(404, 'employer detail not found')
+
+    favorites = employer_detail.liked_jobseeker_ads
+
+    ids = (fav.id for fav in favorites)
+
+    return ids
