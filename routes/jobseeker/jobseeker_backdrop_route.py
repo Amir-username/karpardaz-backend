@@ -9,6 +9,7 @@ from ...session.session import get_session
 
 jobseeker_backdrop_router = APIRouter()
 
+
 @jobseeker_backdrop_router.post('/jobseeker-backdrop/upload/')
 async def upload_backdrop(
     file: UploadFile = File(...),
@@ -24,7 +25,7 @@ async def upload_backdrop(
         raise HTTPException(400, "File too large (max 2MB)")
 
     jobseeker_detail = session.exec(
-        select(JobSeekerDetail).where(JobSeekerDetail.user_id == jobseeker.id)
+        select(JobSeekerDetail).where(JobSeekerDetail.jobseeker_id == jobseeker.id)
     ).first()
     if not jobseeker_detail:
         raise HTTPException(404, "User detail not found")
@@ -43,6 +44,7 @@ async def upload_backdrop(
 
     return {"message": "Backdrop uploaded successfully"}
 
+
 @jobseeker_backdrop_router.get("/jobseeker-backdrop/{backdrop_id}")
 async def get_Backdrop(
     backdrop_id: int,
@@ -54,7 +56,26 @@ async def get_Backdrop(
 
     return Response(
         content=backdrop_record.file_data,
-        media_type="image/jpeg" if backdrop_record.file_name.lower().endswith(".jpg") or backdrop_record.file_name.lower().endswith(".jpeg") else "image/png",
+        media_type="image/jpeg" if backdrop_record.file_name.lower().endswith(
+            ".jpg") or backdrop_record.file_name.lower().endswith(".jpeg") else "image/png",
+        headers={
+            "Content-Disposition": f"inline; filename={backdrop_record.file_name}"
+        }
+    )
+
+@jobseeker_backdrop_router.get("/get-jobseeker-backdrop/{jobseeker_id}")
+async def get_Backdrop(
+    jobseeker_id: int,
+    session: Session = Depends(get_session)
+):
+    backdrop_record = session.get(JobSeekerBackdrop, jobseeker_id)
+    if not backdrop_record:
+        raise HTTPException(404, "Backdrop not found")
+
+    return Response(
+        content=backdrop_record.file_data,
+        media_type="image/jpeg" if backdrop_record.file_name.lower().endswith(
+            ".jpg") or backdrop_record.file_name.lower().endswith(".jpeg") else "image/png",
         headers={
             "Content-Disposition": f"inline; filename={backdrop_record.file_name}"
         }

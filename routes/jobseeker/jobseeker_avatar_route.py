@@ -9,6 +9,7 @@ from ...session.session import get_session
 
 jobseeker_avatar_router = APIRouter()
 
+
 @jobseeker_avatar_router.post('/jobseeker-avatar/upload/')
 async def upload_avatar(
     file: UploadFile = File(...),
@@ -24,7 +25,8 @@ async def upload_avatar(
         raise HTTPException(400, "File too large (max 2MB)")
 
     jobseeker_detail = session.exec(
-        select(JobSeekerDetail).where(JobSeekerDetail.user_id == jobseeker.id)
+        select(JobSeekerDetail).where(
+            JobSeekerDetail.jobseeker_id == jobseeker.id)
     ).first()
     if not jobseeker_detail:
         raise HTTPException(404, "User detail not found")
@@ -43,6 +45,7 @@ async def upload_avatar(
 
     return {"message": "Avatar uploaded successfully"}
 
+
 @jobseeker_avatar_router.get("/jobseeker-avatar/{avatar_id}")
 async def get_avatar(
     avatar_id: int,
@@ -54,8 +57,31 @@ async def get_avatar(
 
     return Response(
         content=avatar_record.file_data,
-        media_type="image/jpeg" if avatar_record.file_name.lower().endswith(".jpg") or avatar_record.file_name.lower().endswith(".jpeg") else "image/png",
+        media_type="image/jpeg" if avatar_record.file_name.lower().endswith(
+            ".jpg") or avatar_record.file_name.lower().endswith(".jpeg") else "image/png",
         headers={
             "Content-Disposition": f"inline; filename={avatar_record.file_name}"
+        }
+    )
+
+
+@jobseeker_avatar_router.get('/get-jobseeker-avatar/{jobseeker_id}')
+def get_current_jobseeker_avatar(
+    jobseeker_id: int,
+    session: Session = Depends(get_session)
+):
+    query = select(JobSeekerAvatar).where(
+        JobSeekerAvatar.jobseeker_id == jobseeker_id)
+    result = session.exec(query).first()
+
+    if not result:
+        raise HTTPException(404, "Avatar not found")
+
+    return Response(
+        content=result.file_data,
+        media_type="image/jpeg" if result.file_name.lower().endswith(
+            ".jpg") or result.file_name.lower().endswith(".jpeg") else "image/png",
+        headers={
+            "Content-Disposition": f"inline; filename={result.file_name}"
         }
     )
