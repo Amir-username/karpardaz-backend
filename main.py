@@ -13,7 +13,9 @@ from .routes.jobseeker.jobseeker_ad_search_route import joseeker_ad_search_route
 from .routes.resume_route import resume_router
 from .routes.current_user_route import current_user_router
 from .routes.jobseeker.jobseeker_avatar_route import jobseeker_avatar_router
+from .routes.employer.employer_avatar_route import employer_avatar_router
 from .routes.jobseeker.jobseeker_backdrop_route import jobseeker_backdrop_router
+from .routes.employer.employer_backdrop_route import employer_backdrop_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -50,7 +52,8 @@ app.include_router(advertise_router, tags=["Employer Advertisements"])
 app.include_router(search_router, tags=["Search Advertisements"])
 app.include_router(jobseeker_router, tags=["Jobseekers"])
 app.include_router(jobseeker_liked_ads_router, tags=['Liked Advertisements'])
-app.include_router(employer_liked_ads_router, tags=['Liked Jobseeker Advertisements'])
+app.include_router(employer_liked_ads_router, tags=[
+                   'Liked Jobseeker Advertisements'])
 app.include_router(jobseeker_detail_router, tags=["Jobseekers Detail"])
 app.include_router(jobseeker_advertise_router, tags=[
                    "Jobseeker Advertisements"])
@@ -58,5 +61,7 @@ app.include_router(joseeker_ad_search_router, tags=[
                    "Search Jobseeker Advertisements"])
 app.include_router(resume_router, tags=['Resume'])
 app.include_router(jobseeker_avatar_router, tags=['Jobseeker Avatar'])
+app.include_router(employer_avatar_router, tags=['Employer Avatar'])
 app.include_router(jobseeker_backdrop_router, tags=['Jobseeker Backdrop'])
+app.include_router(employer_backdrop_router, tags=['Employer Backdrop'])
 app.include_router(current_user_router, tags=['Current User'])

@@ -8,13 +8,14 @@ if TYPE_CHECKING:
     from .Advertise import Advertise
     from .Employer import Employer
     from .JobSeekerAd import JobSeekerAd
+    from .EmployerAvatar import EmployerAvatar
+    from .EmployerBackDrop import EmployerBackdrop
 
 
 class EmployerDetailBase(SQLModel):
     address: str | None = Field(default=None)
     population: PopulationEnum | None = Field(default=PopulationEnum.SMALL)
     description: str | None = Field(default=None)
-    avatar: str | None = Field(default=None)
     backdrop_image: str | None = Field(default=None)
     website: str | None = Field(default=None)
 
@@ -33,6 +34,10 @@ class EmployerDetail(EmployerDetailBase, table=True):
         back_populates="employer", cascade_delete=True)
     liked_jobseeker_ads: Optional[List['JobSeekerAd']] = Relationship(
         back_populates="employer_likeds", link_model=EmployerLikedAdsLink)
+    avatar: Optional['EmployerAvatar'] = Relationship(
+        back_populates='employer', cascade_delete=True)
+    backdrop_image: Optional['EmployerBackdrop'] = Relationship(
+        back_populates='employer', cascade_delete=True)
 
 
 class EmployerDetailUpdate(EmployerDetailBase):
