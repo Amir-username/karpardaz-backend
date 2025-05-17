@@ -25,7 +25,8 @@ async def upload_backdrop(
         raise HTTPException(400, "File too large (max 2MB)")
 
     jobseeker_detail = session.exec(
-        select(JobSeekerDetail).where(JobSeekerDetail.jobseeker_id == jobseeker.id)
+        select(JobSeekerDetail).where(
+            JobSeekerDetail.jobseeker_id == jobseeker.id)
     ).first()
     if not jobseeker_detail:
         raise HTTPException(404, "User detail not found")
@@ -63,12 +64,15 @@ async def get_Backdrop(
         }
     )
 
+
 @jobseeker_backdrop_router.get("/get-jobseeker-backdrop/{jobseeker_id}")
 async def get_Backdrop(
     jobseeker_id: int,
     session: Session = Depends(get_session)
 ):
-    backdrop_record = session.get(JobSeekerBackdrop, jobseeker_id)
+    query = select(JobSeekerBackdrop).where(
+        JobSeekerBackdrop.jobseeker_id == jobseeker_id)
+    backdrop_record = session.exec(query).first()
     if not backdrop_record:
         raise HTTPException(404, "Backdrop not found")
 

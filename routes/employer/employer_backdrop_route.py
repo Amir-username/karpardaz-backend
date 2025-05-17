@@ -22,7 +22,7 @@ async def upload_backdrop(
 
     contents = await file.read()
     if len(contents) > 5 * 1024 * 1024:  # 5MB limit
-        raise HTTPException(400, "File too large (max 2MB)")
+        raise HTTPException(400, "File too large (max 5MB)")
 
     employer_detail = session.exec(
         select(EmployerDetail).where(EmployerDetail.employer_id == employer.id)
@@ -68,7 +68,8 @@ async def get_Backdrop(
     employer_id: int,
     session: Session = Depends(get_session)
 ):
-    backdrop_record = session.get(EmployerBackdrop, employer_id)
+    query = select(EmployerBackdrop).where(EmployerBackdrop.employer_id == employer_id)
+    backdrop_record = session.exec(query).first()
     if not backdrop_record:
         raise HTTPException(404, "Backdrop not found")
 
