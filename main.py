@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .database import create_db_and_tables
+from .database import create_db_and_tables, delete_jdetail_table
 from .routes.employer.employer_route import employer_router
 from .routes.jobseeker.jobseeker_liked_ads_route import jobseeker_liked_ads_router
 from .routes.employer.employer_liked_ads_route import employer_liked_ads_router
@@ -43,7 +43,6 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
-    # delete_jdetail_table()
 
 
 app.include_router(employer_router, tags=["Employers"])

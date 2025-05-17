@@ -65,6 +65,24 @@ async def get_resume(
     )
 
 
+@resume_router.get("/get-resume/{jobseeker_id}")
+async def get_jobseeker_resume(
+    jobseeker_id: int,
+    session: Session = Depends(get_session)
+):
+    query = select(Resume).where(Resume.jobseeker_id == jobseeker_id)
+    resume_record = session.exec(query).first()
+    if not resume_record:
+        raise HTTPException(status_code=404, detail="Resume not found")
+
+    return Response(
+        content=resume_record.file_data,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename={resume_record.file_name}"}
+    )
+
+
 @resume_router.delete("/resume/{resume_id}")
 def delete_resume(
     resume_id: int,
