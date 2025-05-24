@@ -47,7 +47,8 @@ class Advertise(AdvertiseBase, table=True):
         back_populates="liked_advertisements",
         link_model=JobSeekerLikedAdsLink,
     )
-    requests: List["AdRequest"] = Relationship(back_populates="advertise")
+    requests: Optional[List["AdRequest"]] = Relationship(
+        back_populates="advertise")
 
 
 class AdvertiseCreate(AdvertiseBase):

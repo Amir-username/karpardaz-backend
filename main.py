@@ -16,6 +16,7 @@ from .routes.jobseeker.jobseeker_avatar_route import jobseeker_avatar_router
 from .routes.employer.employer_avatar_route import employer_avatar_router
 from .routes.jobseeker.jobseeker_backdrop_route import jobseeker_backdrop_router
 from .routes.employer.employer_backdrop_route import employer_backdrop_router
+from .routes.requests.employer_ad_request_route import employer_ad_request_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -64,3 +65,4 @@ app.include_router(employer_avatar_router, tags=['Employer Avatar'])
 app.include_router(jobseeker_backdrop_router, tags=['Jobseeker Backdrop'])
 app.include_router(employer_backdrop_router, tags=['Employer Backdrop'])
 app.include_router(current_user_router, tags=['Current User'])
+app.include_router(employer_ad_request_router, tags=['Employer Advertise Request'])
