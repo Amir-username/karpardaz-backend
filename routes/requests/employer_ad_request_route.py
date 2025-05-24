@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from ...models.JobSeeker import JobSeeker
 from ...auth.jobseeker_auth import get_current_jobseeker
+from ...auth.employer_auth import get_current_employer
 from ...models.JobSeekerDetail import JobSeekerDetail
 from ...models.AdRequest import AdRequest
 from ...models.Advertise import Advertise
+from ...models.Employer import Employer
 from ...session.session import Session, get_session
 from ...Enums.status_enum import StatusEnum
 from sqlmodel import select
@@ -42,5 +44,33 @@ def employer_ad_request(
         session.refresh(ad_request)
 
         return ad_request
-    
+
     raise HTTPException(404, 'jobseeker detail not found')
+
+
+@employer_ad_request_router.get('/get-jobseeker-requests/')
+def get_jobseeker_requests(
+    jobseeker: JobSeeker = Depends(get_current_jobseeker),
+    session: Session = Depends(get_session),
+):
+    jobseeker_query = select(JobSeekerDetail).where(
+        JobSeekerDetail.jobseeker_id == jobseeker.id)
+    jobseeker_result = session.exec(jobseeker_query).first()
+
+    if not jobseeker_result:
+        raise HTTPException(404, 'jobseeker detail not found')
+
+    requests_query = select(AdRequest).where(
+        AdRequest.jobseeker_id == jobseeker.id)
+    requests_result = session.exec(requests_query).all()
+
+    return requests_result
+
+
+# @employer_ad_request_router.get('/get-adrequest-jobseekers/{advertise_id}')
+# def get_ad_request_jobseekers(
+#     advertise_id: int,
+#     employer: Employer = Depends(get_current_employer),
+#     session: Session = Depends(get_session)
+# ): 
+#     request_query = select(AdRequest).where(AdRequest.advertise_id == advertise_id)
