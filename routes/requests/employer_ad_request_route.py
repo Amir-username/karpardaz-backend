@@ -60,17 +60,19 @@ def get_jobseeker_requests(
     if not jobseeker_result:
         raise HTTPException(404, 'jobseeker detail not found')
 
-    requests_query = select(AdRequest).where(
-        AdRequest.jobseeker_id == jobseeker.id)
-    requests_result = session.exec(requests_query).all()
-
-    return requests_result
+    return jobseeker_result.requests
 
 
-# @employer_ad_request_router.get('/get-adrequest-jobseekers/{advertise_id}')
-# def get_ad_request_jobseekers(
-#     advertise_id: int,
-#     employer: Employer = Depends(get_current_employer),
-#     session: Session = Depends(get_session)
-# ): 
-#     request_query = select(AdRequest).where(AdRequest.advertise_id == advertise_id)
+@employer_ad_request_router.get('/get-adrequest-jobseekers/{advertise_id}')
+def get_ad_request_jobseekers(
+    advertise_id: int,
+    employer: Employer = Depends(get_current_employer),
+    session: Session = Depends(get_session)
+): 
+    advertise = session.get(Advertise, advertise_id)
+    jobseekers: list[JobSeekerDetail] = []
+
+    for request in advertise.requests:
+        jobseekers.append(request.jobseeker)
+
+    return jobseekers
