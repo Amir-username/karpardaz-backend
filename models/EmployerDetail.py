@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from .JobSeekerAd import JobSeekerAd
     from .EmployerAvatar import EmployerAvatar
     from .EmployerBackDrop import EmployerBackdrop
+    from .JobSeekerAdRequest import JobSeekerAdRequest
 
 
 class EmployerDetailBase(SQLModel):
@@ -38,6 +39,8 @@ class EmployerDetail(EmployerDetailBase, table=True):
         back_populates='employer', cascade_delete=True)
     backdrop_image: Optional['EmployerBackdrop'] = Relationship(
         back_populates='employer', cascade_delete=True)
+    requests: Optional[List['JobSeekerAdRequest']] = Relationship(
+        back_populates="employer")
 
 
 class EmployerDetailUpdate(EmployerDetailBase):

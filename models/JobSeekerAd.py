@@ -10,6 +10,7 @@ from .EmployerLikedAdsLink import EmployerLikedAdsLink
 if TYPE_CHECKING:
     from .JobSeekerDetail import JobSeekerDetail
     from .EmployerDetail import EmployerDetail
+    from .JobSeekerAdRequest import JobSeekerAdRequest
 
 
 class JobSeekerAdBase(SQLModel):
@@ -54,6 +55,8 @@ class JobSeekerAd(JobSeekerAdBase, table=True):
         back_populates="liked_jobseeker_ads",
         link_model=EmployerLikedAdsLink,
     )
+    requests: Optional[List['JobSeekerAdRequest']
+                       ] = Relationship(back_populates="advertise")
 
 
 class JobSeekrAdUpdate(SQLModel):

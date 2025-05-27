@@ -69,7 +69,8 @@ class JobSeekerDetail(JobSeekerDetailBase, table=True):
         back_populates='jobseeker', cascade_delete=True)
     liked_advertisements: Optional[List['Advertise']] = Relationship(
         back_populates="jobseeker_likeds", link_model=JobSeekerLikedAdsLink)
-    requests: Optional[List["AdRequest"]] = Relationship(back_populates="jobseeker")
+    requests: Optional[List["AdRequest"]] = Relationship(
+        back_populates="jobseeker")
 
 
 class JobSeekerDetailUpdate(SQLModel):

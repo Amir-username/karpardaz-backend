@@ -68,7 +68,7 @@ def get_ad_request_jobseekers(
     advertise_id: int,
     employer: Employer = Depends(get_current_employer),
     session: Session = Depends(get_session)
-): 
+):
     advertise = session.get(Advertise, advertise_id)
     jobseekers: list[JobSeekerDetail] = []
 
@@ -76,3 +76,37 @@ def get_ad_request_jobseekers(
         jobseekers.append(request.jobseeker)
 
     return jobseekers
+
+
+@employer_ad_request_router.patch('/change-request-status/')
+def change_request_status(
+    request_id: int,
+    status: StatusEnum,
+    employer: Employer = Depends(get_current_employer),
+    session: Session = Depends(get_session)
+):
+    request = session.get(AdRequest, request_id)
+    if not request:
+        raise HTTPException(404, 'request detail not found')
+
+    if request.advertise.employer_id == employer.id:
+        request.status = status
+        session.add(request)
+        session.commit()
+        session.refresh(request)
+
+
+@employer_ad_request_router.get('/advertise-requests/{advertise_id}')
+def get_advertise_request(
+    advertise_id: int,
+    session: Session = Depends(get_session)
+):
+    query = select(AdRequest).where(AdRequest.advertise_id == advertise_id)
+    requests = session.exec(query).all()
+
+    if not requests:
+        raise HTTPException(404, 'requests not found')
+    
+    return requests
+    
+    
