@@ -80,7 +80,7 @@ def get_ad_request_jobseekers(
     return jobseekers
 
 
-@employer_ad_request_router.patch('/change-request-status/')
+@employer_ad_request_router.post('/change-request-status/')
 def change_request_status(
     request_id: int,
     status: StatusEnum,
