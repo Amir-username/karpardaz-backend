@@ -69,4 +69,4 @@ app.include_router(current_user_router, tags=['Current User'])
 app.include_router(employer_ad_request_router, tags=[
                    'Employer Advertise Request'])
 app.include_router(jobseeker_ad_request_router, tags=[
-                   'Jobseeker Advertise Router'])
+                   'Jobseeker Advertise Request'])

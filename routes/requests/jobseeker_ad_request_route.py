@@ -94,3 +94,18 @@ def change_request_status(
         session.add(request)
         session.commit()
         session.refresh(request)
+
+
+@jobseeker_ad_request_router.get('/jobseeker-ads-requests/{advertise_id}')
+def get_advertise_request(
+    advertise_id: int,
+    session: Session = Depends(get_session)
+):
+    query = select(JobSeekerAdRequest).where(
+        JobSeekerAdRequest.advertise_id == advertise_id)
+    requests = session.exec(query).all()
+
+    if not requests:
+        raise HTTPException(404, 'requests not found')
+
+    return requests
