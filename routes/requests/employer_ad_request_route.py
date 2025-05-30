@@ -8,7 +8,7 @@ from ...models.Advertise import Advertise
 from ...models.Employer import Employer
 from ...session.session import Session, get_session
 from ...Enums.status_enum import StatusEnum
-from sqlmodel import select, desc
+from sqlmodel import select, and_
 
 
 employer_ad_request_router = APIRouter()
@@ -110,3 +110,21 @@ def get_advertise_request(
         raise HTTPException(404, 'requests not found')
 
     return requests
+
+
+@employer_ad_request_router.get('/get-request-status/{jobseeker_id}')
+def get_request_status(
+    jobseeker_id: int,
+    advertise_id: int,
+    employer: Employer = Depends(get_current_employer),
+    session: Session = Depends(get_session)
+):
+    query = select(AdRequest).where(
+        and_(AdRequest.jobseeker_id ==
+             jobseeker_id, AdRequest.advertise_id == advertise_id)
+    )
+
+    request = session.exec(query).first()
+
+    if request:
+        return request.status
