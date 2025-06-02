@@ -3,13 +3,17 @@ from sqlmodel import Session, select
 from ..database import engine
 from ..models.AdminUser import Admin
 from ..password import verify_password
-from typing import Annotated
-from fastapi import Depends, HTTPException, status
+from typing import Annotated, Union
+from fastapi import Depends, HTTPException, status, Request
 from ..session.session import get_session
 from ..config import SECRET_KEY, ALGORITHM
 from .token import TokenData
 from jwt import decode as jwt_decode
 from jwt.exceptions import InvalidTokenError
+from ..models.Employer import Employer
+from ..models.JobSeeker import JobSeeker
+from ..auth.employer_auth import oauth2_scheme_employer, get_current_employer
+from ..auth.jobseeker_auth import oauth2_scheme_jobseeker, get_current_jobseeker
 
 
 oauth2_scheme_admin = OAuth2PasswordBearer(
@@ -51,3 +55,64 @@ def get_current_admin(
     if admin is None:
         raise credentials_exception
     return admin
+
+
+async def get_current_employer_or_admin(
+    request: Request,
+    session: Session = Depends(get_session)
+) -> Union[Employer, Admin]:
+    """
+    Returns authenticated user (either Employer or Admin) 
+    with valid credentials
+    """
+    try:
+        admin_token = oauth2_scheme_admin(request)
+        admin = await get_current_admin(admin_token, session)
+        return admin
+    except HTTPException:
+        pass
+
+    try:
+        employer_token = oauth2_scheme_employer(request)
+        employer = await get_current_employer(employer_token, session)
+        return employer
+    except HTTPException:
+        pass
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+
+
+
+async def get_current_jobseeker_or_admin(
+    request: Request,
+    session: Session = Depends(get_session)
+) -> Union[JobSeeker, Admin]:
+    """
+    Returns authenticated user (either Employer or Admin) 
+    with valid credentials
+    """
+    try:
+        admin_token = oauth2_scheme_admin(request)
+        admin = await get_current_admin(admin_token, session)
+        return admin
+    except HTTPException:
+        pass 
+
+    try:
+        jobseeker_token = oauth2_scheme_jobseeker(request)
+        jobseeker = await get_current_jobseeker(jobseeker_token, session)
+        return jobseeker
+    except HTTPException:
+        pass
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+

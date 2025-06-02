@@ -109,3 +109,24 @@ def delete_employer(*, session: Session = Depends(get_session), employer_id: int
     session.delete(employer)
     session.commit()
     return None
+
+
+# @employer_router.delete("/employers/{employer_id}")
+# def delete_employer(*, session: Session = Depends(get_session), employer_id: int,
+#                     current_user: Union[Employer, Admin] = Depends(get_current_employer_or_admin)):
+
+#     if isinstance(current_user, Admin):
+#         user_to_delete = session.get(Employer, employer_id)
+#         if not user_to_delete:
+#             raise HTTPException(status_code=404, detail="User not found")
+#         session.delete(user_to_delete)
+#         session.commit()
+#         return
+
+#     if isinstance(current_user, Employer):
+#         employer = session.get(Employer, employer_id)
+#         if not employer:
+#             raise HTTPException(status_code=404, detail="Employer not found")
+#         session.delete(employer)
+#         session.commit()
+#         return None
