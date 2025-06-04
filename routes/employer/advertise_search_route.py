@@ -25,7 +25,9 @@ def search_advertises(
     experience: ExperienceEnum | None = Query(None),
     salary: SalaryEnum | None = Query(None),
     gender: GenderEnum | None = Query(None),
-    position: PositionEnum | None = Query(None)
+    position: PositionEnum | None = Query(None),
+    offset: int = 0,
+    limit: int = 10
 ):
     filters = []
     if search_q:
@@ -56,6 +58,6 @@ def search_advertises(
         filters.append(Advertise.position == position)
 
     filter_query = select(Advertise).where(
-        *filters).order_by(desc(Advertise.id))
+        *filters).order_by(desc(Advertise.id)).offset(offset=offset).limit(limit=limit)
     result = session.exec(filter_query).all()
     return result

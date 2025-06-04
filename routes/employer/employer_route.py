@@ -59,7 +59,7 @@ def create_employer(*, session: Session = Depends(get_session), employer: Employ
 
 # Get all Employers
 @employer_router.get("/employers/", response_model=list[EmployerPublic])
-def read_employers(*, session: Session = Depends(get_session)):
+def read_employers(*, session: Session = Depends(get_session), offset: int = 0, limit: int = 10):
     employers = session.exec(select(Employer)).all()
     return employers
 
