@@ -60,7 +60,8 @@ def create_employer(*, session: Session = Depends(get_session), employer: Employ
 # Get all Employers
 @employer_router.get("/employers/", response_model=list[EmployerPublic])
 def read_employers(*, session: Session = Depends(get_session), offset: int = 0, limit: int = 10):
-    employers = session.exec(select(Employer)).all()
+    query = select(Employer).offset(offset=offset).limit(limit=limit)
+    employers = session.exec(query).all()
     return employers
 
 
