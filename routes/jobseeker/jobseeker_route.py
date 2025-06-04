@@ -80,10 +80,13 @@ def read_jobseeker(
 
 # Get all Jobseekers
 @jobseeker_router.get("/jobseekers/", response_model=list[JobSeekerPublic])
-def read_jobseekers(session: Session = Depends(get_session),
+def read_jobseekers(session: Session = Depends(get_session), offset: int = 0,
+                    limit: int = 10
                     # current_user: JobSeeker = Depends(get_current_jobseeker)
                     ):
-    jobseekers = session.exec(select(JobSeeker)).all()
+    query = select(JobSeeker).offset(offset=offset).limit(limit=limit)
+
+    jobseekers = session.exec(query).all()
     return jobseekers
 
 

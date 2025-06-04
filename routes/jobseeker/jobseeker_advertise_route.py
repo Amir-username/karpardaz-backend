@@ -32,7 +32,7 @@ def get_jobseeker_ad_or_404(
 def create_jobseeker_ad(
     advertisement: JobSeekerAdCreate,
     session: Session = Depends(get_session),
-    jobseeker: JobSeeker = Depends(get_current_jobseeker)
+    jobseeker: JobSeeker = Depends(get_current_jobseeker),
 ):
     query = select(JobSeekerDetail).where(
         JobSeekerDetail.jobseeker_id == jobseeker.id)

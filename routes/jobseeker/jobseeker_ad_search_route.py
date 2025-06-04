@@ -25,7 +25,9 @@ def search_jobseeker_advertises(
     experience: ExperienceEnum | None = Query(None),
     salary: SalaryEnum | None = Query(None),
     gender: GenderEnum | None = Query(None),
-    position: PositionEnum | None = Query(None)
+    position: PositionEnum | None = Query(None),
+    offset: int = 0,
+    limit: int = 10
 ):
     filters = []
 
@@ -55,7 +57,7 @@ def search_jobseeker_advertises(
         filters.append(JobSeekerAd.position == position)
 
     filter_query = select(JobSeekerAd).where(
-        *filters).order_by(desc(JobSeekerAd.id))
+        *filters).order_by(desc(JobSeekerAd.id)).offset(offset=offset).limit(limit=limit)
     result = session.exec(filter_query).all()
 
     return result
