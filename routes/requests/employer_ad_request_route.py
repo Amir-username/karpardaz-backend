@@ -52,6 +52,8 @@ def employer_ad_request(
 def get_jobseeker_requests(
     jobseeker: JobSeeker = Depends(get_current_jobseeker),
     session: Session = Depends(get_session),
+    # offset: int = 0,
+    # limit: int = 10
 ):
     jobseeker_query = select(JobSeekerDetail).where(
         JobSeekerDetail.jobseeker_id == jobseeker.id)
