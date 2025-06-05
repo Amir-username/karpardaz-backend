@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from ...session.session import get_session
 from ...models.JobSeekerAd import JobSeekerAd
-from ...models.JobSeekerDetail import JobSeekerDetail
-from sqlmodel import Session, select, or_, desc
+from sqlmodel import Session, select, or_, desc, func
 from ...Enums.experience_enum import ExperienceEnum
 from ...Enums.gender_enum import GenderEnum
 from ...Enums.position_enum import PositionEnum
@@ -12,7 +11,7 @@ from ...Enums.salary_enum import SalaryEnum
 joseeker_ad_search_router = APIRouter()
 
 
-@joseeker_ad_search_router.get('/jobseeker-ads/search/', response_model=list[JobSeekerAd])
+@joseeker_ad_search_router.get('/jobseeker-ads/search/')
 def search_jobseeker_advertises(
     session: Session = Depends(get_session),
     search_q: str | None = Query(None, min_length=2),
@@ -56,8 +55,16 @@ def search_jobseeker_advertises(
     if position is not None:
         filters.append(JobSeekerAd.position == position)
 
+    total_items = session.exec(
+        select(func.count()).select_from(JobSeekerAd)).one()
+    total_pages = (total_items + limit - 1) // limit
+
     filter_query = select(JobSeekerAd).where(
         *filters).order_by(desc(JobSeekerAd.id)).offset(offset=offset).limit(limit=limit)
     result = session.exec(filter_query).all()
 
-    return result
+    response = {
+        'total_pages': total_pages,
+        'advertises': result
+    }
+    return response

@@ -8,7 +8,7 @@ from ...auth.employer_auth import authenticate_employer
 from ...auth.token import Token, create_access_token
 from ...config import ACCESS_TOKEN_EXPIRE_MINUTES
 from ...models.Employer import Employer, EmployerCreate, EmployerPublic, EmployerUpdate
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 from ...session.session import get_session
 from ...password import get_password_hash
 from ...auth.employer_auth import get_current_employer
@@ -58,14 +58,24 @@ def create_employer(*, session: Session = Depends(get_session), employer: Employ
 
 
 # Get all Employers
-@employer_router.get("/employers/", response_model=list[EmployerPublic])
+@employer_router.get("/employers/")
 def read_employers(*, session: Session = Depends(get_session), offset: int = 0, limit: int = 10):
+    total_items = session.exec(
+        select(func.count()).select_from(Employer)).one()
+    total_pages = (total_items + limit - 1) // limit
+
     query = select(Employer).offset(offset=offset).limit(limit=limit)
     employers = session.exec(query).all()
-    return employers
 
+    response = {
+        'total_pages': total_pages,
+        'advertises': employers
+    }
+    return response
 
 # Ger Employer by ID
+
+
 @employer_router.get("/employers/{employer_id}", response_model=EmployerPublic)
 def read_employer(*, session: Session = Depends(get_session), employer_id: int):
     employer = session.get(Employer, employer_id)

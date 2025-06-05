@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from ...session.session import get_session
 from ...models.Advertise import Advertise, AdvertisePublic
-from sqlmodel import Session, select, or_, desc
+from sqlmodel import Session, select, or_, desc, func
 from ...Enums.experience_enum import ExperienceEnum
 from ...Enums.salary_enum import SalaryEnum
 from ...Enums.gender_enum import GenderEnum
@@ -11,7 +11,7 @@ from ...Enums.position_enum import PositionEnum
 search_router = APIRouter()
 
 
-@search_router.get('/jobs/search/', response_model=list[AdvertisePublic])
+@search_router.get('/jobs/search/')
 def search_advertises(
     session: Session = Depends(get_session),
     search_q: str | None = Query(None, min_length=2),
@@ -57,7 +57,16 @@ def search_advertises(
     if position is not None:
         filters.append(Advertise.position == position)
 
+    total_items = session.exec(
+        select(func.count()).select_from(Advertise)).one()
+    total_pages = (total_items + limit - 1) // limit
+
     filter_query = select(Advertise).where(
         *filters).order_by(desc(Advertise.id)).offset(offset=offset).limit(limit=limit)
     result = session.exec(filter_query).all()
-    return result
+
+    response = {
+        'total_pages': total_pages,
+        'advertises': result
+    }
+    return response

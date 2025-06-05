@@ -10,7 +10,7 @@ from ...config import ACCESS_TOKEN_EXPIRE_MINUTES
 
 # from ..models import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
 from ...models.JobSeeker import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
-from sqlmodel import Session, select, or_
+from sqlmodel import Session, select, or_, func
 from ...session.session import get_session
 from ...password import get_password_hash
 from ...auth.jobseeker_auth import get_current_jobseeker
@@ -79,16 +79,24 @@ def read_jobseeker(
 
 
 # Get all Jobseekers
-@jobseeker_router.get("/jobseekers/", response_model=list[JobSeekerPublic])
+@jobseeker_router.get("/jobseekers/")
 def read_jobseekers(session: Session = Depends(get_session), offset: int = 0,
                     limit: int = 10
                     # current_user: JobSeeker = Depends(get_current_jobseeker)
                     ):
+    total_items = session.exec(
+        select(func.count()).select_from(JobSeeker)).one()
+    total_pages = (total_items + limit - 1) // limit
+
     query = select(JobSeeker).offset(offset=offset).limit(limit=limit)
 
     jobseekers = session.exec(query).all()
-    return jobseekers
 
+    response = {
+        'total_pages': total_pages,
+        'advertises': jobseekers
+    }
+    return response
 
 # Update Jobseeker by ID
 @jobseeker_router.patch("/jobseekers/{jobseeker_id}", response_model=JobSeekerPublic)

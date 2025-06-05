@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session, select, desc
+from sqlmodel import Session, select, desc, func
 from ...models.JobSeekerAd import JobSeekerAd, JobSeekerAdCreate, JobSeekrAdUpdate
 from ...models.JobSeeker import JobSeeker
 from ...models.JobSeekerDetail import JobSeekerDetail
@@ -65,12 +65,21 @@ def create_jobseeker_ad(
     return db_advertisement
 
 
-@jobseeker_advertise_router.get("/jobseeker-ads/", response_model=list[JobSeekerAd])
+@jobseeker_advertise_router.get("/jobseeker-ads/")
 def read_jobseeker_ads(session: Session = Depends(get_session), offset: int = 0, limit: int = 10):
+    total_items = session.exec(
+        select(func.count()).select_from(JobSeekerAd)).one()
+    total_pages = (total_items + limit - 1) // limit
+
     statement = select(JobSeekerAd).order_by(
         desc(JobSeekerAd.id)).offset(offset).limit(limit)
     results = session.exec(statement).all()
-    return results
+
+    response = {
+        'total_pages': total_pages,
+        'advertises': results
+    }
+    return response
 
 
 @jobseeker_advertise_router.get("/jobseeker-own-ads/{jobseeker_id}", response_model=list[JobSeekerAd])

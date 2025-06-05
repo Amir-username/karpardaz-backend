@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session, select, desc
+from sqlmodel import Session, select, desc, func
 from ...models.Advertise import Advertise, AdvertiseCreate, AdvertisePublic, AdvertiseUpdate, GenderEnum, PositionEnum
 from ...models.Employer import Employer
 from ...models.EmployerDetail import EmployerDetail
@@ -63,12 +63,22 @@ def create_advertisement(
     return db_advertisement
 
 
-@advertise_router.get("/advertisements/", response_model=list[AdvertisePublic])
+@advertise_router.get("/advertisements/")
 def read_advertisements(session: Session = Depends(get_session), offset: int = 0, limit: int = 10):
+    total_items = session.exec(
+        select(func.count()).select_from(Advertise)).one()
+    total_pages = (total_items + limit - 1) // limit
+
+    
     statement = select(Advertise).order_by(
         desc(Advertise.id)).offset(offset).limit(limit)
     results = session.exec(statement).all()
-    return results
+
+    response = {
+        'total_pages': total_pages,
+        'advertises': results
+    }
+    return response
 
 
 @advertise_router.get("/employer-ads/{employer_id}", response_model=list[AdvertisePublic])
