@@ -94,7 +94,7 @@ def read_jobseekers(session: Session = Depends(get_session), offset: int = 0,
 
     response = {
         'total_pages': total_pages,
-        'advertises': jobseekers
+        'jobseeekers': jobseekers
     }
     return response
 
