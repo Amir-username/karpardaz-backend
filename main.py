@@ -19,6 +19,7 @@ from .routes.jobseeker.jobseeker_backdrop_route import jobseeker_backdrop_router
 from .routes.employer.employer_backdrop_route import employer_backdrop_router
 from .routes.requests.employer_ad_request_route import employer_ad_request_router
 from .routes.requests.jobseeker_ad_request_route import jobseeker_ad_request_router
+from .recommendations.recommendations import recommend_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -72,3 +73,4 @@ app.include_router(employer_ad_request_router, tags=[
                    'Employer Advertise Request'])
 app.include_router(jobseeker_ad_request_router, tags=[
                    'Jobseeker Advertise Request'])
+app.include_router(recommend_router, tags=['advertise recommendation'])

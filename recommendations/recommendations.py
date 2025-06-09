@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 
-from models.JobSeeker import JobSeeker
+from ..models.JobSeeker import JobSeeker
 from ..session.session import get_session
 from ..auth.jobseeker_auth import get_current_jobseeker
 
@@ -15,7 +15,7 @@ from ..Enums.experience_enum import ExperienceEnum
 from ..Enums.position_enum import PositionEnum
 from ..Enums.gender_enum import GenderEnum
 
-router = APIRouter()
+recommend_router = APIRouter()
 
 # Helper functions
 def one_hot_encode(value, vocabulary: list) -> List[int]:
@@ -31,12 +31,12 @@ def pre_filter_ads(job_seeker: JobSeekerDetail, all_ads: List[Advertise]) -> Lis
     filtered = []
     for ad in all_ads:
         # Remote work filter
-        if job_seeker.is_remote and not ad.is_remote:
-            continue
+        # if job_seeker.is_remote and not ad.is_remote:
+        #     continue
             
-        # Internship filter
-        if job_seeker.is_internship and not ad.is_internship:
-            continue
+        # # Internship filter
+        # if job_seeker.is_internship and not ad.is_internship:
+        #     continue
             
         # Gender compatibility filter
         if ad.gender != GenderEnum.NO_DIFFERENCE:
@@ -108,7 +108,7 @@ def recommend_ads(
     return [filtered_ads[i] for i in ranked_indices[:top_n]]
 
 # FastAPI Endpoint
-@router.get("/recommendation-jobs/", response_model=List[AdvertisePublic])
+@recommend_router.get("/recommendation-jobs/", response_model=List[AdvertisePublic])
 async def get_job_recommendations(
     *,
     session: Session = Depends(get_session),
