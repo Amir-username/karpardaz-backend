@@ -44,6 +44,9 @@ def pre_filter_ads(job_seeker: JobSeekerDetail, all_ads: List[Advertise]) -> Lis
                 continue
             elif ad.gender != job_seeker.gender:
                 continue
+
+        if ad.city != job_seeker.city and not ad.is_remote:
+            continue
                 
         filtered.append(ad)
     return filtered
