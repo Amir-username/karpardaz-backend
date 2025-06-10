@@ -39,6 +39,14 @@ def read_employer_detail(id: int, session: Session = Depends(get_session)):
     return result
 
 
+@employer_detail_router.get('/employer-details/', response_model=list[EmployerDetail])
+def read_all_employers(session: Session = Depends(get_session)):
+    query = select(EmployerDetail)
+    result = session.exec(query).all()
+
+    return result
+
+
 @employer_detail_router.patch('/employer-detail/{id}', response_model=EmployerDetail)
 def update_employer_detail(
     id: int,

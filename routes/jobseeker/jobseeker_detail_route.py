@@ -45,6 +45,16 @@ def read_jobseeker_detail(
     return result
 
 
+@jobseeker_detail_router.get('/jobseeker-details/', response_model=list[JobSeekerDetail])
+def read_all_jobseekers(
+    session: Session = Depends(get_session)
+):
+    query = select(JobSeekerDetail)
+    result = session.exec(query).all()
+
+    return result
+
+
 @jobseeker_detail_router.patch('/jobseeker-detail/{id}', response_model=JobSeekerDetail)
 def update_jobseeker_detail(
     id: int,
