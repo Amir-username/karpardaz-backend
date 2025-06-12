@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .database import create_db_and_tables
+from .database import create_db_and_tables, delete_jdetail_table
 from .routes.admin.admin_route import admin_router
 from .routes.employer.employer_route import employer_router
 from .routes.jobseeker.jobseeker_liked_ads_route import jobseeker_liked_ads_router
@@ -21,6 +21,7 @@ from .routes.requests.employer_ad_request_route import employer_ad_request_route
 from .routes.requests.jobseeker_ad_request_route import jobseeker_ad_request_router
 from .recommendations.recommendations import recommend_router
 from fastapi.middleware.cors import CORSMiddleware
+from .routes.employer.interview_route import interview_router
 
 
 app = FastAPI()
@@ -47,6 +48,7 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+    # delete_jdetail_table()
 
 
 app.include_router(admin_router, tags=["Admin"])
@@ -74,3 +76,4 @@ app.include_router(employer_ad_request_router, tags=[
 app.include_router(jobseeker_ad_request_router, tags=[
                    'Jobseeker Advertise Request'])
 app.include_router(recommend_router, tags=['advertise recommendation'])
+app.include_router(interview_router, tags=['Interview'])

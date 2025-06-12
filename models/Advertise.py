@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from .EmployerDetail import EmployerDetail
     from .JobSeekerDetail import JobSeekerDetail
     from .AdRequest import AdRequest
+    from .Interview import Interview
 
 
 class AdvertiseBase(SQLModel):
@@ -49,6 +50,7 @@ class Advertise(AdvertiseBase, table=True):
     )
     requests: Optional[List["AdRequest"]] = Relationship(
         back_populates="advertise")
+    interview: Optional['Interview'] = Relationship(back_populates='advertise')
 
 
 class AdvertiseCreate(AdvertiseBase):
