@@ -1,12 +1,12 @@
 from ...session.session import get_session
 from ...models.Employer import Employer
 from ...models.JobSeeker import JobSeeker
-from ...models.Interview import Interview, Answer
+from ...models.Interview import Interview
 from ...models.Advertise import Advertise
 from fastapi import APIRouter, Depends, HTTPException
 from ...auth.employer_auth import get_current_employer
 from ...auth.jobseeker_auth import get_current_jobseeker
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 
 interview_router = APIRouter()
@@ -66,3 +66,44 @@ def create_answers(
         session.refresh(interview)
 
         return interview
+
+
+@interview_router.get('/get-interview/{advertise_id}')
+def get_interview(
+    advertise_id: int,
+    session: Session = Depends(get_session)
+):
+    advertise = session.get(Advertise, advertise_id)
+    if not advertise:
+        raise HTTPException(404, 'Advertise not found')
+    interview = session.exec(select(Interview).where(
+        Interview.advertise_id == advertise_id)).first()
+    if not interview:
+        raise HTTPException(404, 'Interview not found')
+    
+    return interview
+
+
+@interview_router.delete('/delete-interview/{advertise_id}')
+def delete_interview(
+    advertise_id: int,
+    employer: Employer = Depends(get_current_employer),
+    session: Session = Depends(get_session)
+):
+    advertise = session.get(Advertise, advertise_id)
+
+    if not advertise:
+        raise HTTPException(404, 'Advertise not found')
+
+    query = select(Interview).where(Interview.advertise_id == advertise_id)
+    result = session.exec(query).first()
+
+    if not result:
+        raise HTTPException(404, 'Interview not found')
+
+    if employer.id == advertise.employer_id:
+        session.delete(result)
+        session.commit()
+        session.refresh(result)
+    else:
+        raise HTTPException(401, 'You dont have permision for that')
