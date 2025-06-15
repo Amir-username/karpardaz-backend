@@ -104,6 +104,5 @@ def delete_interview(
     if employer.id == advertise.employer_id:
         session.delete(result)
         session.commit()
-        session.refresh(result)
     else:
         raise HTTPException(401, 'You dont have permision for that')
