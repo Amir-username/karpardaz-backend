@@ -19,6 +19,7 @@ from .routes.jobseeker.jobseeker_backdrop_route import jobseeker_backdrop_router
 from .routes.employer.employer_backdrop_route import employer_backdrop_router
 from .routes.requests.employer_ad_request_route import employer_ad_request_router
 from .routes.requests.jobseeker_ad_request_route import jobseeker_ad_request_router
+from .routes.admin.charts_route import chart_router
 from .recommendations.recommendations import recommend_router
 from fastapi.middleware.cors import CORSMiddleware
 from .routes.employer.interview_route import interview_router
@@ -52,6 +53,7 @@ def on_startup():
 
 
 app.include_router(admin_router, tags=["Admin"])
+app.include_router(chart_router, tags=["Charts"])
 app.include_router(employer_router, tags=["Employers"])
 app.include_router(employer_detail_router, tags=["Employers Detail"])
 app.include_router(advertise_router, tags=["Employer Advertisements"])
