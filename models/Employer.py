@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
 from pydantic import EmailStr, field_validator
-from ..password import verify_password
+from ..core.password import verify_password
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:

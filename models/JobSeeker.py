@@ -1,11 +1,15 @@
 from sqlmodel import SQLModel, Field, Relationship
 from pydantic import EmailStr, field_validator
 import re
-from ..password import verify_password
 from typing import TYPE_CHECKING
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 
 
 if TYPE_CHECKING:
+    from core.password import verify_password
     from .JobSeekerDetail import JobSeekerDetail
 
 

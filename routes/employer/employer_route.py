@@ -10,7 +10,7 @@ from ...config import ACCESS_TOKEN_EXPIRE_MINUTES
 from ...models.Employer import Employer, EmployerCreate, EmployerPublic, EmployerUpdate
 from sqlmodel import Session, select, func
 from ...session.session import get_session
-from ...password import get_password_hash
+from ...core.password import get_password_hash
 from ...auth.employer_auth import get_current_employer
 
 employer_router = APIRouter()

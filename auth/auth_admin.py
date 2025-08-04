@@ -2,7 +2,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from ..database import engine
 from ..models.AdminUser import Admin
-from ..password import verify_password
+from ..core.password import verify_password
 from typing import Annotated, Union
 from fastapi import Depends, HTTPException, status, Request
 from ..session.session import get_session

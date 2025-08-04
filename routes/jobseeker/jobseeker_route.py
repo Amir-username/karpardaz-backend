@@ -12,7 +12,7 @@ from ...config import ACCESS_TOKEN_EXPIRE_MINUTES
 from ...models.JobSeeker import JobSeeker, JobSeekerCreate, JobSeekerPublic, JobSeekerUpdate
 from sqlmodel import Session, select, or_, func
 from ...session.session import get_session
-from ...password import get_password_hash
+from ...core.password import get_password_hash
 from ...auth.jobseeker_auth import get_current_jobseeker
 
 
