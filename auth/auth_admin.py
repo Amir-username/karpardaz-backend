@@ -26,7 +26,7 @@ def authenticate_admin(username: str, password: str):
             Admin.username == username)).first()
         if not admin:
             return False
-        if not verify_password(password, admin.hashed_password):
+        if not password == admin.hashed_password:
             return False
         return admin
 
