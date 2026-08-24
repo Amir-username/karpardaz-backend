@@ -4,7 +4,7 @@ A comprehensive job portal backend API built with FastAPI, featuring intelligent
 
 ## 🌐 Live Demo
 
-**API Documentation**: [https://underlying-umeko-univercityproject317-ea179cc6.koyeb.app/docs](https://underlying-umeko-univercityproject317-ea179cc6.koyeb.app/docs)
+**API Documentation**: [https://karpardaz-backend.fastapicloud.dev/docs](https://karpardaz-backend.fastapicloud.dev/docs)
 
 Explore the interactive API documentation and test all endpoints directly in your browser.
 
