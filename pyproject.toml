@@ -1,0 +1,16 @@
+[project]
+name = "karpardaz-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.141.1",
+    "jwt>=1.4.0",
+    "numpy>=2.5.2",
+    "passlib>=1.7.4",
+    "psycopg2-binary>=2.9.12",
+    "pyjwt>=2.13.0",
+    "scikit-learn>=1.9.0",
+    "sqlmodel>=0.0.39",
+]
