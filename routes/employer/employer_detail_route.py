@@ -1,10 +1,17 @@
 from fastapi import APIRouter, Depends
-from sqlmodel import Session, select
+from sqlmodel import Session
+
+from ...auth.employer_auth import get_current_employer
 from ...models.Employer import Employer
 from ...models.EmployerDetail import EmployerDetail, EmployerDetailCreate, EmployerDetailUpdate
-from ...auth.employer_auth import get_current_employer
 from ...session.session import get_session
-
+from ...logic.employer_logic import (
+    create_detail,
+    get_detail,
+    get_all_details,
+    update_detail,
+    remove_detail,
+)
 
 employer_detail_router = APIRouter()
 
@@ -15,36 +22,17 @@ def create_employer_detail(
     employer: Employer = Depends(get_current_employer),
     session: Session = Depends(get_session)
 ):
-    db = EmployerDetail.model_validate(detail)
-    db.employer = employer
-    db.employer_id = employer.id
-    db.company_name = employer.company_name
-
-    session.add(db)
-    session.commit()
-    session.refresh(db)
-
-    return db
+    return create_detail(session, detail, employer)
 
 
 @employer_detail_router.get('/employer-detail/{id}', response_model=EmployerDetail)
 def read_employer_detail(id: int, session: Session = Depends(get_session)):
-    query = select(EmployerDetail).where(EmployerDetail.id == id)
-    result = session.exec(query).first()
-
-    session.add(result)
-    session.commit()
-    session.refresh(result)
-
-    return result
+    return get_detail(session, id)
 
 
 @employer_detail_router.get('/employer-details/', response_model=list[EmployerDetail])
 def read_all_employers(session: Session = Depends(get_session)):
-    query = select(EmployerDetail)
-    result = session.exec(query).all()
-
-    return result
+    return get_all_details(session)
 
 
 @employer_detail_router.patch('/employer-detail/{id}', response_model=EmployerDetail)
@@ -54,19 +42,7 @@ def update_employer_detail(
     session: Session = Depends(get_session),
     employer: Employer = Depends(get_current_employer)
 ):
-    query = select(EmployerDetail).where(EmployerDetail.id == id)
-    result = session.exec(query).first()
-
-    if (result.employer_id == employer.id):
-        update_data = employer_update.model_dump(exclude_unset=True)
-        for key, value in update_data.items():
-            setattr(result, key, value)
-
-        session.add(result)
-        session.commit()
-        session.refresh(result)
-
-    return result
+    return update_detail(session, id, employer_update, employer)
 
 
 @employer_detail_router.delete('/employer-detail/{id}')
@@ -75,13 +51,5 @@ def delete_employer_detail(
     session: Session = Depends(get_session),
     employer: Employer = Depends(get_current_employer)
 ):
-    query = select(EmployerDetail).where(EmployerDetail.id == id)
-    result = session.exec(query).first()
+    return remove_detail(session, id, employer)
 
-    if (employer.id == result.employer_id):
-        session.delete(result)
-        session.commit()
-
-        return 'deleted employer detail'
-
-    return None

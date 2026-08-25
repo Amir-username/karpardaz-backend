@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+
 from ...auth.employer_auth import get_current_employer
 from ...models.Employer import Employer
-from sqlmodel import Session, select
+from sqlmodel import Session
 from ...session.session import get_session
-from ...models.EmployerDetail import EmployerDetail
-from ...models.JobSeekerAd import JobSeekerAd
+from ...logic.employer_logic import like_ad, dislike_ad, get_favorites
 
 employer_liked_ads_router = APIRouter()
 
@@ -15,23 +15,7 @@ def advertise_like(
     employer: Employer = Depends(get_current_employer),
     session: Session = Depends(get_session)
 ):
-    query = select(EmployerDetail).where(
-        EmployerDetail.employer_id == employer.id)
-    employer_detail = session.exec(query).first()
-
-    if employer_detail:
-        liked_advertise = session.get(JobSeekerAd, advertise_id)
-        if liked_advertise:
-            employer_detail.liked_jobseeker_ads.append(liked_advertise)
-            session.add(employer_detail)
-            session.commit()
-            session.refresh(employer_detail)
-
-            return employer_detail.liked_jobseeker_ads
-    else:
-        raise HTTPException(404, 'employer detail not found')
-
-    return None
+    return like_ad(session, advertise_id, employer)
 
 
 @employer_liked_ads_router.get('/employer-dislike-ad/{advertise_id}')
@@ -40,23 +24,7 @@ def advertise_dislike(
     employer: Employer = Depends(get_current_employer),
     session: Session = Depends(get_session)
 ):
-    query = select(EmployerDetail).where(
-        EmployerDetail.employer_id == employer.id)
-    employer_detail = session.exec(query).first()
-
-    if employer_detail:
-        liked_advertise = session.get(JobSeekerAd, advertise_id)
-        if liked_advertise:
-            employer_detail.liked_jobseeker_ads.remove(liked_advertise)
-            session.add(employer_detail)
-            session.commit()
-            session.refresh(employer_detail)
-
-            return employer_detail.liked_jobseeker_ads
-    else:
-        raise HTTPException(404, 'employer detail not found')
-
-    return None
+    return dislike_ad(session, advertise_id, employer)
 
 
 @employer_liked_ads_router.get('/employer-favorites/')
@@ -64,15 +32,5 @@ def employer_favorites(
     employer: Employer = Depends(get_current_employer),
     session: Session = Depends(get_session)
 ):
-    employer_detail_query = select(EmployerDetail).where(
-        EmployerDetail.employer_id == employer.id)
-    employer_detail = session.exec(employer_detail_query).first()
+    return get_favorites(session, employer)
 
-    if not employer_detail:
-        raise HTTPException(404, 'employer detail not found')
-
-    favorites = employer_detail.liked_jobseeker_ads
-
-    ids = (fav.id for fav in favorites)
-
-    return ids
