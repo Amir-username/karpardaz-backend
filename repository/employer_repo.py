@@ -1,13 +1,13 @@
 from typing import Optional
 from sqlmodel import Session, select, func, desc, or_
 
-from models.Employer import Employer
-from models.EmployerDetail import EmployerDetail
-from models.EmployerAvatar import EmployerAvatar
-from models.EmployerBackDrop import EmployerBackdrop
-from models.Advertise import Advertise
-from models.Interview import Interview
-from models.JobSeekerAd import JobSeekerAd
+from ..models.Employer import Employer
+from ..models.EmployerDetail import EmployerDetail
+from ..models.EmployerAvatar import EmployerAvatar
+from ..models.EmployerBackDrop import EmployerBackdrop
+from ..models.Advertise import Advertise
+from ..models.Interview import Interview
+from ..models.JobSeekerAd import JobSeekerAd
 
 
 # ─── Employer CRUD ──────────────────────────────────────────────

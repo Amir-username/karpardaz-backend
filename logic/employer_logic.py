@@ -2,17 +2,17 @@ from fastapi import HTTPException, status, UploadFile, Response
 from sqlmodel import Session
 from datetime import timedelta
 
-from auth.employer_auth import authenticate_employer, get_current_employer
-from auth.token import Token, create_access_token
-from config import ACCESS_TOKEN_EXPIRE_MINUTES
-from core.password import get_password_hash
-from models.Employer import Employer, EmployerCreate, EmployerPublic, EmployerUpdate
-from models.EmployerDetail import EmployerDetail, EmployerDetailCreate, EmployerDetailUpdate
-from models.EmployerAvatar import EmployerAvatar
-from models.EmployerBackDrop import EmployerBackdrop
-from models.Advertise import Advertise, AdvertiseCreate, AdvertisePublic, AdvertiseUpdate
-from models.Interview import Interview
-from repository.employer_repo import (
+from ..auth.employer_auth import authenticate_employer, get_current_employer
+from ..auth.token import Token, create_access_token
+from ..config import ACCESS_TOKEN_EXPIRE_MINUTES
+from ..core.password import get_password_hash
+from ..models.Employer import Employer, EmployerCreate, EmployerPublic, EmployerUpdate
+from ..models.EmployerDetail import EmployerDetail, EmployerDetailCreate, EmployerDetailUpdate
+from ..models.EmployerAvatar import EmployerAvatar
+from ..models.EmployerBackDrop import EmployerBackdrop
+from ..models.Advertise import Advertise, AdvertiseCreate, AdvertisePublic, AdvertiseUpdate
+from ..models.Interview import Interview
+from ..repository.employer_repo import (
     get_employer_by_email,
     create_employer,
     count_employers,
@@ -269,7 +269,7 @@ def search_ads(session: Session, *, search_q: str | None, city_q: str | None,
     if position is not None:
         filters.append(Advertise.position == position)
 
-    from repository.employer_repo import search_advertisements
+    from ..repository.employer_repo import search_advertisements
     total_items = count_advertisements(session)
     total_pages = (total_items + limit - 1) // limit
     results = search_advertisements(session, filters, offset, limit)
